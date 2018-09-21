@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#fff"
+    android:padding="10dp"
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:padding="5dp"
+            android:id="@+id/img_view_students"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/ic_people"
+            android:layout_margin="2dp"
+            android:layout_alignParentRight="true"/>
+
+        <ImageView
+            android:padding="5dp"
+            android:layout_toLeftOf="@id/img_view_students"
+            android:id="@+id/img_view_projects"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/ic_content"
+            android:layout_margin="5dp"
+            />
+        <TextView
+            android:id="@+id/txt_course_group"
+            android:layout_marginLeft="5dp"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@id/img_view_projects"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Group Name"
+            android:textSize="25dp"
+            android:textColor="#000"
+            />
+
+
+
+    </RelativeLayout>
+
+
+</LinearLayout>
