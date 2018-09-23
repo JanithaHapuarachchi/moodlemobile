@@ -2,10 +2,12 @@ package mrt.lk.moodlemobile;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -42,19 +44,19 @@ public class CourseProjectsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_course_projects);
         getSupportActionBar().hide();
 
-        if (savedInstanceState == null) {
+      //  if (savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();
             if(extras == null) {
-                SELECTED_GROUP_ID= null;
-                SELECTED_GROUP_NAME= null;
+                SELECTED_GROUP_ID= "";
+                SELECTED_GROUP_NAME= "";
             } else {
                 SELECTED_GROUP_ID= extras.getString("SELECTED_GROUP_ID");
-                SELECTED_GROUP_NAME= extras.getString("SELECTED_GROUP_NAME");
+                SELECTED_GROUP_NAME= extras.getString("GIVEN_GROUP_NAME");
             }
-        } else {
-            SELECTED_GROUP_ID= (String) savedInstanceState.getSerializable("SELECTED_GROUP_ID");
-            SELECTED_GROUP_NAME= (String) savedInstanceState.getSerializable("SELECTED_GROUP_NAME");
-        }
+//        } else {
+//            SELECTED_GROUP_ID= (String) savedInstanceState.getSerializable("SELECTED_GROUP_ID");
+//            SELECTED_GROUP_NAME= (String) savedInstanceState.getSerializable("GIVEN_GROUP_NAME");
+//        }
 
         prgController = new ProgressBarController(this);
         txt_group_name = (TextView)findViewById(R.id.txt_group_name);
@@ -74,6 +76,18 @@ public class CourseProjectsActivity extends AppCompatActivity {
         Log.e("MOODLEMOBILE",projects.toString());
         groupProjectsAdapter = new GroupProjectsAdapter(getApplicationContext(),projects);
         list_group_projects.setAdapter(groupProjectsAdapter);
+
+        list_group_projects.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent i = new Intent(CourseProjectsActivity.this,ProjectMenuActivity.class);
+                i.putExtra("SELECTED_GROUP_ID",SELECTED_GROUP_ID);
+                i.putExtra("SELECTED_GROUP_NAME",SELECTED_GROUP_NAME);
+                i.putExtra("PROJECT_NAME",projects.get(position).project_name);
+                i.putExtra("PROJECT_ID",projects.get(position).project_id);
+                startActivity(i);
+            }
+        });
     }
 
 

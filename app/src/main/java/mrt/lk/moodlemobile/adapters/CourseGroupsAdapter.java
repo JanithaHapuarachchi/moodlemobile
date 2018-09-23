@@ -15,6 +15,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import mrt.lk.moodlemobile.CourseProjectsActivity;
+import mrt.lk.moodlemobile.GroupDetailsActivity;
 import mrt.lk.moodlemobile.R;
 import mrt.lk.moodlemobile.data.CourseGroupItem;
 
@@ -27,13 +28,17 @@ public class CourseGroupsAdapter extends ArrayAdapter {
     public ArrayList<CourseGroupItem> items ;
     private final LayoutInflater mInflater;
     private final Context context;
+    public static final String EVALUATION_GROUP = "EVALUATION_GROUP";
+    public static final String GENERAL_GROUP = "GENERAL_GROUP";
+    private final String grouptype;
 
 
-    public CourseGroupsAdapter(Context context,ArrayList<CourseGroupItem> items) {
+    public CourseGroupsAdapter(Context context, ArrayList<CourseGroupItem> items, String grouptype) {
         super(context, R.layout.layout_course_group_item,items);
         this.items = items;
         this.mInflater = LayoutInflater.from(context);
         this.context =context;
+        this.grouptype = grouptype;
     }
 
 
@@ -62,6 +67,23 @@ public class CourseGroupsAdapter extends ArrayAdapter {
                 context.startActivity(i);
             }
         });
+        img_view_students.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CourseGroupItem item = items.get(position);
+                Intent i = new Intent(context, GroupDetailsActivity.class);
+                i.putExtra("SELECTED_GROUP_ID",item.group_id);
+                i.putExtra("SELECTED_GROUP_NAME",item.group_name);
+                context.startActivity(i);
+            }
+        });
+
+        if(grouptype.equals(EVALUATION_GROUP)){
+            img_view_projects.setVisibility(View.GONE);
+            img_view_students.setVisibility(View.GONE);
+        }
+
+
         CourseGroupItem item = items.get(position);
         txt_course_group.setText(item.group_name);
         return  v;

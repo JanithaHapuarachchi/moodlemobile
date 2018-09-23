@@ -41,7 +41,7 @@
                     android:layout_height="30dp"
                     android:layout_width="wrap_content"
                     android:text="Add New Project"
-                    android:id="@+id/change_server_title"
+                    android:id="@+id/add_new_project_title"
                     android:background="@color/app_background"
                     android:textColor="@color/white"
                     />

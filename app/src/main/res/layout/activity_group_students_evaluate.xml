@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="mrt.lk.moodlemobile.GroupStudentsEvaluateActivity"
+    android:background="@color/app_background"
+    android:padding="5dp">
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    >
+
+    <TextView
+        android:padding="5dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/txt_title"
+        android:layout_marginBottom="5dp"
+        android:text="Evalate Project: for Group: "
+        android:background="@color/white"/>
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/list_evaluate_students"
+        android:dividerHeight="2dp"></ListView>
+
+
+</LinearLayout>
+
+
+<include layout="@layout/layout_progress_bar" />
+</RelativeLayout>

@@ -1,10 +1,9 @@
 package mrt.lk.moodlemobile;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -37,11 +36,16 @@ public class CourseGroupsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                Intent i = new Intent(CourseGroupsActivity.this, CreateGroupActivity.class);
+                i.putExtra("IS_CREATE_GROUP",true);
+                i.putExtra("GIVEN_GROUP_NAME","");
+                i.putExtra("GIVEN_GROUP_ID","");
+                startActivity(i);
             }
         });
 
         setSampleData();
-        list_course_groups.setAdapter(new CourseGroupsAdapter(getApplicationContext(),groups));
+        list_course_groups.setAdapter(new CourseGroupsAdapter(getApplicationContext(),groups, CourseGroupsAdapter.GENERAL_GROUP));
 
     }
 

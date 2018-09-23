@@ -17,7 +17,13 @@
             </intent-filter>
         </activity>
         <activity android:name=".CourseGroupsActivity" />
-        <activity android:name=".CourseProjectsActivity"></activity>
+        <activity android:name=".CourseProjectsActivity" />
+        <activity android:name=".CreateGroupActivity" />
+        <activity android:name=".GroupDetailsActivity" />
+        <activity android:name=".ProjectMenuActivity" />
+        <activity android:name=".GroupStudentsEvaluateActivity" />
+        <activity android:name=".AssignEvaluationGroupActivity" />
+        <activity android:name=".StudentEvaluationResultsActivity"></activity>
     </application>
 
 </manifest>

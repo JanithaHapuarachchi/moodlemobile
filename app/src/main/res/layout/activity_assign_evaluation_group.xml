@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="mrt.lk.moodlemobile.AssignEvaluationGroupActivity"
+    android:background="@color/app_background"
+    android:padding="5dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:textSize="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_title"
+            android:textAlignment="center"
+            android:text="Set Evaluation Group for project: of Group: "
+            />
+
+        <ExpandableListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/list_assign_remove_groups"></ExpandableListView>
+
+    </LinearLayout>
+
+
+    <include layout="@layout/layout_progress_bar" />
+
+</RelativeLayout>
