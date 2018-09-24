@@ -98,6 +98,7 @@ public class CourseProjectsActivity extends AppCompatActivity {
                 i.putExtra("SELECTED_GROUP_NAME",SELECTED_GROUP_NAME);
                 i.putExtra("PROJECT_NAME",projects.get(position).project_name);
                 i.putExtra("PROJECT_ID",projects.get(position).project_id);
+                i.putExtra("IS_PROJECT",true);
                 startActivity(i);
                 return true;
             }

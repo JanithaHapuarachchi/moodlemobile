@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -29,6 +30,7 @@ public class ProjectMenuActivity extends AppCompatActivity {
     ImageView img_add_sub_group;
     ListView list_subprojects;
     ListView list_allocated_groups;
+    LinearLayout layout_subprojects;
    // GroupProjectsAdapter adapter;
     ArrayList<CourseGroupItem> allocatedgroups;
     ArrayList<GroupSubProjectItem> projects;
@@ -37,6 +39,7 @@ public class ProjectMenuActivity extends AppCompatActivity {
     String entered_project_name;
     GroupSubProjectItem newItem;
     static String SELECTED_GROUP_ID,SELECTED_GROUP_NAME,PROJECT_NAME,PROJECT_ID;
+    boolean IS_PROJECT;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,11 +51,13 @@ public class ProjectMenuActivity extends AppCompatActivity {
             SELECTED_GROUP_NAME= "";
             PROJECT_ID ="";
             PROJECT_NAME ="";
+            IS_PROJECT = false;
         } else {
             SELECTED_GROUP_ID= extras.getString("SELECTED_GROUP_ID");
             SELECTED_GROUP_NAME= extras.getString("GIVEN_GROUP_NAME");
             PROJECT_ID = extras.getString("PROJECT_ID");
             PROJECT_NAME = extras.getString("PROJECT_NAME");
+            IS_PROJECT = extras.getBoolean("IS_PROJECT");
         }
 
         getSupportActionBar().setTitle(PROJECT_NAME);
@@ -63,7 +68,37 @@ public class ProjectMenuActivity extends AppCompatActivity {
         btn_final_report= (Button)findViewById(R.id.btn_final_report);
         img_add_sub_group = (ImageView)findViewById(R.id.img_add_sub_group);
         list_subprojects = (ListView)findViewById(R.id.list_subprojects);
+        layout_subprojects = (LinearLayout)findViewById(R.id.layout_subprojects);
 
+        btn_contribution_report.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(ProjectMenuActivity.this,ProjectReportActivity.class);
+                i.putExtra("PROJECT_ID",PROJECT_ID);
+                i.putExtra("PROJECT_NAME",PROJECT_NAME);
+                i.putExtra("IS_PROJECT",IS_PROJECT);
+                startActivity(i);
+            }
+        });
+
+        btn_final_report.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(ProjectMenuActivity.this,FinalReportActivity.class);
+                i.putExtra("PROJECT_ID",PROJECT_ID);
+                i.putExtra("PROJECT_NAME",PROJECT_NAME);
+                i.putExtra("IS_PROJECT",IS_PROJECT);
+                startActivity(i);
+            }
+        });
+
+        if(!IS_PROJECT){
+            btn_goto_diary.setVisibility(View.GONE);
+            btn_set_evaluation_group.setVisibility(View.GONE);
+            btn_evaluate.setVisibility(View.GONE);
+            layout_subprojects.setVisibility(View.GONE);
+            list_subprojects.setVisibility(View.GONE);
+        }
         setSampleData();
         setSampleEvaluationGroups();
         adapter = new GroupSubProjectAdapter(getApplicationContext(),projects);
@@ -122,6 +157,21 @@ public class ProjectMenuActivity extends AppCompatActivity {
                 i.putExtra("PROJECT_ID",projects.get(position).project_id);
                 i.putExtra("IS_PROJECT",false);
                 startActivity(i);
+            }
+        });
+
+        list_subprojects.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent i = new Intent(ProjectMenuActivity.this,ProjectMenuActivity.class);
+                i.putExtra("SELECTED_GROUP_ID",SELECTED_GROUP_ID);
+                i.putExtra("SELECTED_GROUP_NAME",SELECTED_GROUP_NAME);
+                i.putExtra("PROJECT_NAME",projects.get(position).project_name);
+                i.putExtra("PROJECT_ID",projects.get(position).project_id);
+                i.putExtra("IS_PROJECT",false);
+                startActivity(i);
+
+                return true;
             }
         });
     }

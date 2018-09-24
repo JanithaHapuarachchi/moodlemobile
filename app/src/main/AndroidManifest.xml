@@ -29,7 +29,9 @@
         <activity android:name=".AssignEvaluationGroupActivity" />
         <activity android:name=".StudentEvaluationResultsActivity" />
         <activity android:name=".ProjectWorksActivity" />
-        <activity android:name=".DiaryActivity"></activity>
+        <activity android:name=".DiaryActivity" />
+        <activity android:name=".ProjectReportActivity" />
+        <activity android:name=".FinalReportActivity"></activity>
     </application>
 
 </manifest>
