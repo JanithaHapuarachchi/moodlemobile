@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="mrt.lk.moodlemobile.ProjectWorksActivity"
+    android:background="@color/app_background">
+
+
+    <LinearLayout
+        android:background="@color/white"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/layout_send"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="7"
+        android:padding="5dp">
+
+
+        <EditText
+            android:id="@+id/txt_message"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="5"
+            android:hint="Message"
+            android:background="@android:color/transparent"
+            />
+
+        <Button
+            android:id="@+id/btn_attach"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/ic_attach"/>
+        <Button
+            android:id="@+id/btn_send"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Send"
+            android:textColor="@color/green"
+            android:background="#00ffffff"
+            />
+
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/list_works"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/layout_send"
+        android:layout_alignParentTop="true"/>
+    <include layout="@layout/layout_progress_bar" />
+
+</RelativeLayout>

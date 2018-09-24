@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="mrt.lk.moodlemobile">
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -23,7 +27,9 @@
         <activity android:name=".ProjectMenuActivity" />
         <activity android:name=".GroupStudentsEvaluateActivity" />
         <activity android:name=".AssignEvaluationGroupActivity" />
-        <activity android:name=".StudentEvaluationResultsActivity"></activity>
+        <activity android:name=".StudentEvaluationResultsActivity" />
+        <activity android:name=".ProjectWorksActivity" />
+        <activity android:name=".DiaryActivity"></activity>
     </application>
 
 </manifest>

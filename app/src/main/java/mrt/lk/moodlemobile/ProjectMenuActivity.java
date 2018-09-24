@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -19,6 +20,7 @@ import mrt.lk.moodlemobile.adapters.GroupSubProjectAdapter;
 import mrt.lk.moodlemobile.data.CourseGroupItem;
 import mrt.lk.moodlemobile.data.GroupProjectItem;
 import mrt.lk.moodlemobile.data.GroupSubProjectItem;
+import mrt.lk.moodlemobile.data.LoggedUser;
 import mrt.lk.moodlemobile.utils.Utility;
 
 public class ProjectMenuActivity extends AppCompatActivity {
@@ -73,6 +75,18 @@ public class ProjectMenuActivity extends AppCompatActivity {
             }
         });
 
+        btn_goto_diary.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(ProjectMenuActivity.this,DiaryActivity.class);
+                i.putExtra("SELECTED_PARTICIPANT_ID", LoggedUser.id);
+                i.putExtra("SELECTED_PARTICIPANT_NAME",LoggedUser.name);
+                i.putExtra("PROJECT_NAME",PROJECT_NAME);
+                i.putExtra("PROJECT_ID",PROJECT_ID);
+                startActivity(i);
+            }
+        });
+
         btn_set_evaluation_group.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -94,6 +108,19 @@ public class ProjectMenuActivity extends AppCompatActivity {
                 i.putExtra("SELECTED_GROUP_NAME",SELECTED_GROUP_NAME);
                 i.putExtra("PROJECT_NAME",PROJECT_NAME);
                 i.putExtra("PROJECT_ID",PROJECT_ID);
+                startActivity(i);
+            }
+        });
+
+        list_subprojects.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent i = new Intent(ProjectMenuActivity.this,ProjectWorksActivity.class);
+                i.putExtra("SELECTED_GROUP_ID",SELECTED_GROUP_ID);
+                i.putExtra("SELECTED_GROUP_NAME",SELECTED_GROUP_NAME);
+                i.putExtra("PROJECT_NAME",projects.get(position).project_name);
+                i.putExtra("PROJECT_ID",projects.get(position).project_id);
+                i.putExtra("IS_PROJECT",false);
                 startActivity(i);
             }
         });

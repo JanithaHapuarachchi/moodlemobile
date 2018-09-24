@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+
+    <LinearLayout
+        android:padding="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/layout_work">
+
+    <TextView
+        android:textColor="@color/app_text_color"
+        android:layout_gravity="end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/txt_time"
+        android:text="Time"
+        android:layout_marginBottom="2dp"/>
+
+        <TextView
+            android:textAlignment="center"
+            android:textColor="@color/app_text_color"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_project"
+            android:text="Project Name"
+            android:layout_marginBottom="2dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/txt_comment_by"
+        android:text="Person"
+        android:layout_marginBottom="2dp"/>
+
+        <TextView
+            android:textColor="#000"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_comment"
+            android:text="Comment"/>
+        <Button
+            android:id="@+id/btn_download"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Download"
+            android:background="@null"
+            android:textColor="@color/app_text_color_warning"/>
+
+        <TextView
+            android:layout_gravity="end"
+            android:text="Seen List"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_seen"/>
+    </LinearLayout>
+</RelativeLayout>

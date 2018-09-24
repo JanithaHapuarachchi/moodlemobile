@@ -1,13 +1,17 @@
 package mrt.lk.moodlemobile;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
 import mrt.lk.moodlemobile.adapters.GroupStudentInfoAdapter;
+import mrt.lk.moodlemobile.data.LoggedUser;
 import mrt.lk.moodlemobile.data.ParticipantItem;
 import mrt.lk.moodlemobile.utils.ProgressBarController;
 
@@ -43,6 +47,19 @@ public class GroupStudentsEvaluateActivity extends AppCompatActivity {
             PROJECT_NAME = extras.getString("PROJECT_NAME");
         }
         txt_title.setText("Evaluate Project "+PROJECT_NAME+" for Group "+SELECTED_GROUP_NAME);
+
+        list_evaluate_students.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ParticipantItem p = participants.get(position);
+                Intent i = new Intent(GroupStudentsEvaluateActivity.this,DiaryActivity.class);
+                i.putExtra("SELECTED_PARTICIPANT_ID", p.id);
+                i.putExtra("SELECTED_PARTICIPANT_NAME",p.name);
+                i.putExtra("PROJECT_NAME",PROJECT_NAME);
+                i.putExtra("PROJECT_ID",PROJECT_ID);
+                startActivity(i);
+            }
+        });
 
         setSampleData();
         adapter = new GroupStudentInfoAdapter(getApplicationContext(),participants, GroupStudentInfoAdapter.EVALUATION_GROUP);

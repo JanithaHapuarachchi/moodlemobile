@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/app_text_color"
+        >
+
+        <LinearLayout
+            android:id="@+id/layout_change_server_settings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/app_background">
+                <ImageView
+                    android:id="@+id/closeimg"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/ic_close"
+                    android:clickable="true"
+                    android:maxHeight="0.3dp"
+                    android:maxWidth="0.3dp"
+                    android:layout_gravity="right"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+
+                    />
+                <TextView
+                    android:textSize="20dp"
+                    android:layout_centerInParent="true"
+                    android:layout_height="30dp"
+                    android:layout_width="wrap_content"
+                    android:text="Evsaluate"
+                    android:id="@+id/evaluate_title"
+                    android:background="@color/app_background"
+                    android:textColor="@color/white"
+                    />
+            </RelativeLayout>
+        </LinearLayout>
+        <ScrollView
+            android:layout_below="@id/layout_change_server_settings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/app_text_color"
+            android:padding="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <EditText
+                    android:id="@+id/txt_marks"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="0dp"
+                    android:layout_marginRight="0dp"
+                    android:layout_marginTop="12dp"
+                    android:hint="Result"
+                    android:inputType="number"
+                    android:textColorHint="#000"/>
+
+                <EditText
+                    android:id="@+id/txt_comment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="0dp"
+                    android:layout_marginRight="0dp"
+                    android:layout_marginTop="12dp"
+                    android:hint="Comment"
+                    android:textColorHint="#000"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <Button
+                        android:id="@+id/btn_add"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:textColor="@color/app_background_shadow"
+                        android:textStyle="bold"
+                        android:text="Send Marks" />
+
+                    <Button
+                        android:id="@+id/btn_close"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:textColor="@color/app_background"
+                        android:textStyle="bold"
+                        android:text="Close" />
+
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+        </ScrollView>
+    </RelativeLayout>
+</LinearLayout>

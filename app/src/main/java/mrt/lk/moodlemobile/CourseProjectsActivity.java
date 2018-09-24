@@ -80,12 +80,26 @@ public class CourseProjectsActivity extends AppCompatActivity {
         list_group_projects.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent i = new Intent(CourseProjectsActivity.this,ProjectWorksActivity.class);
+                i.putExtra("SELECTED_GROUP_ID",SELECTED_GROUP_ID);
+                i.putExtra("SELECTED_GROUP_NAME",SELECTED_GROUP_NAME);
+                i.putExtra("PROJECT_NAME",projects.get(position).project_name);
+                i.putExtra("PROJECT_ID",projects.get(position).project_id);
+                i.putExtra("IS_PROJECT",true);
+                startActivity(i);
+            }
+        });
+
+        list_group_projects.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent i = new Intent(CourseProjectsActivity.this,ProjectMenuActivity.class);
                 i.putExtra("SELECTED_GROUP_ID",SELECTED_GROUP_ID);
                 i.putExtra("SELECTED_GROUP_NAME",SELECTED_GROUP_NAME);
                 i.putExtra("PROJECT_NAME",projects.get(position).project_name);
                 i.putExtra("PROJECT_ID",projects.get(position).project_id);
                 startActivity(i);
+                return true;
             }
         });
     }
