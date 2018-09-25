@@ -13,19 +13,178 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import mrt.lk.moodlemobile.data.ParticipantItem;
+import mrt.lk.moodlemobile.data.ResObject;
+
 /**
  * Created by janithamh on 8/12/18.
  */
 
 public class WSCalls {
 
-//    Context context;
-//    DataManager dtManager;
-//
-//    public WSCalls(Context context){
-//        this.context =context;
-//        dtManager = new DataManager(context);
-//    }
+    Context context;
+    DataManager dtManager;
+
+    public WSCalls(Context context){
+        this.context =context;
+
+    }
+
+
+    public ResObject checkLogin(String username,String password){
+        ResObject res_object = new ResObject();
+       String response;
+        String request  =  "username="+username+"&password="+password+"&service=moodle_mobile_app";
+        try {
+
+            response = RequestHandler.getLogin(request,context);
+            res_object.validity = Constants.VALIDITY_SUCCESS;
+             res_object.msg = response;
+        } catch (Exception e) {
+            res_object.validity = Constants.VALIDITY_FAILED;
+            res_object.msg = e.getMessage();
+        }
+
+        return res_object;
+    }
+
+    public ResObject confirm_group_students(String group_id){
+        ResObject res_object = new ResObject();
+        String response;
+        String request  =  "group_id="+group_id;
+        try {
+
+            response = RequestHandler.sendPost(request,Constants.confirm_group_students,context);
+            res_object.validity = Constants.VALIDITY_SUCCESS;
+            res_object.msg = response;
+        } catch (Exception e) {
+            res_object.validity = Constants.VALIDITY_FAILED;
+            res_object.msg = e.getMessage();
+        }
+
+        return res_object;
+    }
+
+
+    public ResObject remove_student_from_group(String group_id,String student_id){
+        ResObject res_object = new ResObject();
+        String response;
+        String request  =  "group_id="+group_id+"&student_id="+student_id;
+        try {
+
+            response = RequestHandler.sendPost(request,Constants.remove_student_from_group,context);
+            res_object.validity = Constants.VALIDITY_SUCCESS;
+            res_object.msg = response;
+        } catch (Exception e) {
+            res_object.validity = Constants.VALIDITY_FAILED;
+            res_object.msg = e.getMessage();
+        }
+
+        return res_object;
+    }
+
+    public ResObject course_group_students(String group_id){
+        ResObject res_object = new ResObject();
+        String response;
+        String request  =  "group_id="+group_id;
+        try {
+
+            response = RequestHandler.sendPost(request,Constants.course_group_students,context);
+            res_object.validity = Constants.VALIDITY_SUCCESS;
+            res_object.msg = response;
+        } catch (Exception e) {
+            res_object.validity = Constants.VALIDITY_FAILED;
+            res_object.msg = e.getMessage();
+        }
+
+        return res_object;
+    }
+
+    public ResObject add_group_project(String group_id,String project_name){
+        ResObject res_object = new ResObject();
+        String response;
+        String request  =  "group_id="+group_id+"&project_name="+project_name;
+        try {
+
+            response = RequestHandler.sendPost(request,Constants.add_group_project,context);
+            res_object.validity = Constants.VALIDITY_SUCCESS;
+            res_object.msg = response;
+        } catch (Exception e) {
+            res_object.validity = Constants.VALIDITY_FAILED;
+            res_object.msg = e.getMessage();
+        }
+
+        return res_object;
+    }
+
+    public ResObject course_group_projects(String group_id){
+        ResObject res_object = new ResObject();
+        String response;
+        String request  =  "group_id="+group_id;
+        try {
+
+            response = RequestHandler.sendPost(request,Constants.course_group_projects,context);
+            res_object.validity = Constants.VALIDITY_SUCCESS;
+            res_object.msg = response;
+        } catch (Exception e) {
+            res_object.validity = Constants.VALIDITY_FAILED;
+            res_object.msg = e.getMessage();
+        }
+
+        return res_object;
+    }
+
+    public ResObject add_group_students(String group_id, String course_id, String group_name, ArrayList<ParticipantItem> students){
+        ResObject res_object = new ResObject();
+        String response;
+        String request  =  "course_id="+course_id+"&group_name="+group_name;
+        if(group_id != null){
+            request += "&group_id="+group_id;
+        }
+        JSONArray ja = new JSONArray();
+        JSONObject jo;
+        for(int i=0;i<students.size();i++){
+            jo = new JSONObject();
+            try {
+                if(students.get(i).isSelected) {
+                    jo.put("participantid", students.get(i).id);
+                    ja.put(jo);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        request += "&students="+ja.toString();
+        try {
+            response = RequestHandler.sendPost(request,Constants.add_group_students,context);
+            res_object.validity = Constants.VALIDITY_SUCCESS;
+            res_object.msg = response;
+        } catch (Exception e) {
+            res_object.validity = Constants.VALIDITY_FAILED;
+            res_object.msg = e.getMessage();
+        }
+
+        return res_object;
+    }
+
+
+    public ResObject get_unallocated_students(String course_id){
+        ResObject res_object = new ResObject();
+        String response;
+        String request  =  "course_id="+course_id;
+        try {
+
+            response = RequestHandler.sendPost(request,Constants.unallocated_group_students,context);
+            res_object.validity = Constants.VALIDITY_SUCCESS;
+            res_object.msg = response;
+        } catch (Exception e) {
+            res_object.validity = Constants.VALIDITY_FAILED;
+            res_object.msg = e.getMessage();
+        }
+
+        return res_object;
+    }
+
 //
 //    public ResObject autherise_user(String username, String password) {
 //

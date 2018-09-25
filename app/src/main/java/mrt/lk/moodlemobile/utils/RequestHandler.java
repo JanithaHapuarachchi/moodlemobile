@@ -67,7 +67,50 @@ public class RequestHandler {
          */   return responseString;
     }
 
-    public static String sendPost(JSONObject postobject, String methodname,Context context) throws Exception{
+
+    public static String getLogin(String getparams, Context context) throws Exception{
+        SSLContext sc;
+        sc = SSLContext.getInstance("TLS");
+        sc.init(null, new X509TrustManager[]{new NullX509TrustManager()}, new SecureRandom());
+        String responseString ="";
+        //Constants.MAIN_URL = Utility.getServerURL(context)+":"+Utility.getServerPORT(context)+"/fineract-provider/api/v1/";
+        String completeurl = Constants.LOGIN_URL+getparams;
+        Log.e("URL GET",completeurl);
+        URL obj = new URL(completeurl);
+        HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
+        con.setSSLSocketFactory(sc.getSocketFactory());
+        con.setHostnameVerifier(new NullHostNameVerifier());
+        con.setRequestMethod("GET");
+        con.setRequestProperty("Fineract-Platform-TenantId",Utility.getServerTenant(context));
+        if(!Utility.getAuthKey(context).equals("")){
+            con.setRequestProperty ("Authorization", "Basic " + Utility.getAuthKey(context));
+        }
+        int responseCode = con.getResponseCode();
+        Log.e("Code",Integer.toString(responseCode));
+        /*if (responseCode == HttpURLConnection.HTTP_OK) {*/
+
+        BufferedReader in = new BufferedReader(new InputStreamReader(
+                con.getInputStream()));
+        String inputLine= "";
+        StringBuffer response = new StringBuffer();
+
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+
+        responseString = response.toString();
+        Log.e("String",responseString);
+        in.close();
+
+       /* }
+        else {
+
+        }
+         */   return responseString;
+    }
+
+
+    public static String sendPost(String request, String methodname,Context context) throws Exception{
         SSLContext sc;
         sc = SSLContext.getInstance("TLS");
         String responseString ="";
@@ -91,16 +134,11 @@ public class RequestHandler {
 
         con.setRequestMethod("POST");
 
-        con.setRequestProperty("Content-Type","application/json");
-        con.setRequestProperty("Fineract-Platform-TenantId",Utility.getServerTenant(context));
-        if(!Utility.getAuthKey(context).equals("")){
-        con.setRequestProperty  ("Authorization", "Basic " + Utility.getAuthKey(context));
-            Log.e("AUTH","BASIC");
-        }
+        con.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
         con.connect();
 
         DataOutputStream printout = new DataOutputStream(con.getOutputStream ());
-        printout.writeBytes(postobject.toString());
+        printout.writeBytes(request);
         printout.flush ();
         printout.close ();
 

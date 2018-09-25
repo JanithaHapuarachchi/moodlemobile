@@ -1,5 +1,6 @@
 package mrt.lk.moodlemobile;
 
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -12,15 +13,25 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 import mrt.lk.moodlemobile.adapters.GroupAddStudentsAdapter;
 import mrt.lk.moodlemobile.data.GroupProjectItem;
+import mrt.lk.moodlemobile.data.LoggedUser;
 import mrt.lk.moodlemobile.data.ParticipantItem;
+import mrt.lk.moodlemobile.data.ResObject;
+import mrt.lk.moodlemobile.utils.Constants;
 import mrt.lk.moodlemobile.utils.ProgressBarController;
+import mrt.lk.moodlemobile.utils.Utility;
+import mrt.lk.moodlemobile.utils.WSCalls;
 
 public class CreateGroupActivity extends AppCompatActivity {
 
+    WSCalls wscalls;
     ProgressBarController prgController;
     EditText group_name,search_name;
     Button btn_done;
@@ -36,6 +47,7 @@ public class CreateGroupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_group);
         prgController = new ProgressBarController(this);
+        wscalls = new WSCalls(getApplicationContext());
         group_name = (EditText)findViewById(R.id.group_name);
         search_name = (EditText)findViewById(R.id.search_name);
         btn_done =  (Button) findViewById(R.id.btn_done);
@@ -71,7 +83,14 @@ public class CreateGroupActivity extends AppCompatActivity {
         btn_done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                rearrange_original_participants();
+                if(!group_name.getText().toString().equals("")){
+                    Utility.showMessage("Please add a Name",CreateGroupActivity.this);
+                }
+                else {
+                    rearrange_original_participants();
+                    //new AddGroupStudets().execute(group_name.getText().toString());
+                }
+
             }
         });
 
@@ -102,6 +121,7 @@ public class CreateGroupActivity extends AppCompatActivity {
             }
         });
         setSampleData();
+       // new LoadUnAllocatedAtudents().execute(LoggedUser.course_id);
         addStudentsAdapter = new GroupAddStudentsAdapter(getApplicationContext(),participants);
         list_students.setAdapter(addStudentsAdapter);
 
@@ -183,6 +203,102 @@ public class CreateGroupActivity extends AppCompatActivity {
             participants.add(item);
         }
         original_participants = participants;
+    }
+
+    public void populate_unallocated_students(String msg){
+        try {
+            JSONObject j  = new JSONObject(msg);
+            if(j.getString("msg").equals("Success")) {
+
+                //JSONArray j_array = new JSONArray(msg);
+                JSONArray j_array = j.getJSONArray("data");
+                participants = new ArrayList<ParticipantItem>();
+                ParticipantItem p;
+                JSONObject jo;
+                for (int i = 0; i < j_array.length(); i++) {
+                    jo = j_array.getJSONObject(i);
+                    p = new ParticipantItem();
+                    p.id = jo.getString("participantid");
+                    p.name = jo.getString("studentname");
+                    participants.add(p);
+                }
+                original_participants = participants;
+                addStudentsAdapter = new GroupAddStudentsAdapter(getApplicationContext(),participants);
+                list_students.setAdapter(addStudentsAdapter);
+            }
+            else{
+                Utility.showMessage(j.getString("msg"),getApplicationContext());
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void populate_addgroup_data(String msg){
+        if(IS_CREATE_GROUP){
+            finish();
+        }
+        rearrange_original_participants();
+    }
+
+    class AddGroupStudets extends AsyncTask<String,Void,ResObject>{
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            prgController.showProgressBar("Sending Data");
+        }
+
+        @Override
+        protected void onPostExecute(ResObject response) {
+            super.onPostExecute(response);
+            prgController.hideProgressBar();
+            if(response.validity.equals(Constants.VALIDITY_SUCCESS)){
+                populate_addgroup_data(response.msg);
+            }
+            else{
+                Utility.showMessage(response.msg,getApplicationContext());
+            }
+        }
+
+        @Override
+        protected ResObject doInBackground(String... params) {
+            if(IS_CREATE_GROUP){
+               return wscalls.add_group_students(null,LoggedUser.course_id,params[0],participants);
+            }
+            else{
+                return wscalls.add_group_students(GIVEN_GROUP_ID,LoggedUser.course_id,params[0],participants);
+            }
+
+
+        }
+    }
+
+    class LoadUnAllocatedAtudents extends AsyncTask <String,Void,ResObject>{
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            prgController.showProgressBar("Loading Students");
+        }
+
+        @Override
+        protected void onPostExecute(ResObject response) {
+            super.onPostExecute(response);
+            prgController.hideProgressBar();
+
+            if(response.validity.equals(Constants.VALIDITY_SUCCESS)){
+                populate_unallocated_students(response.msg);
+            }
+            else{
+                Utility.showMessage(response.msg,getApplicationContext());
+            }
+        }
+
+        @Override
+        protected ResObject doInBackground(String... params) {
+            return wscalls.get_unallocated_students(params[0]);
+        }
     }
 
 }

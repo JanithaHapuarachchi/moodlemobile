@@ -11,5 +11,7 @@ public class LoggedUser {
     public static String id = "1";
     public static String name ="AAA";
 
+    public static String course_id = "1" ;
+
 
 }

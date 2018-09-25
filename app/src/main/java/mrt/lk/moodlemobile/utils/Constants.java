@@ -26,6 +26,17 @@ public class Constants {
     public static String SERVER_PORT = "SERVER_PORT";
     public static String SERVER_TENANT = "SERVER_TENANT";
     public static String MAIN_URL = "https://52.74.229.37:443/fineract-provider/api/v1/";
+    public static String LOGIN_URL = "https://mpbl.projects.uom.lk/login/token.php?";
+
+    public static String unallocated_group_students = "unallocated_group_students.php";
+    public static String add_group_students = "add_group_students.php";
+    public static String course_group_projects = "course_group_projects.php";
+    public static String add_group_project = "add_group_project.php";
+    public static String confirm_group_students = "confirm_group_students.php";
+    public static String course_group_students = "course_group_students.php";
+    public static String remove_student_from_group = "remove_student_from_group.php";
+
+
 
     public static final String AUTHENTICATION_URL = "authentication";
     public static final String LOANS_URL = "loans";

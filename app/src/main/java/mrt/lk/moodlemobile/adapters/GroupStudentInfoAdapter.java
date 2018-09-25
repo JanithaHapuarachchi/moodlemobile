@@ -2,6 +2,7 @@ package mrt.lk.moodlemobile.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
@@ -14,10 +15,15 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import mrt.lk.moodlemobile.CourseProjectsActivity;
+import mrt.lk.moodlemobile.GroupDetailsActivity;
 import mrt.lk.moodlemobile.R;
 import mrt.lk.moodlemobile.StudentEvaluationResultsActivity;
 import mrt.lk.moodlemobile.data.CourseGroupItem;
 import mrt.lk.moodlemobile.data.ParticipantItem;
+import mrt.lk.moodlemobile.data.ResObject;
+import mrt.lk.moodlemobile.utils.Constants;
+import mrt.lk.moodlemobile.utils.Utility;
+import mrt.lk.moodlemobile.utils.WSCalls;
 
 /**
  * Created by janithah on 9/22/2018.
@@ -79,11 +85,51 @@ public class GroupStudentInfoAdapter extends ArrayAdapter {
         img_remove_student.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                ParticipantItem item = items.get(position);
+                new RemoveStudentFromGroup(position).execute(GroupDetailsActivity.SELECTED_GROUP_ID,item.id);
             }
         });
         ParticipantItem item = items.get(position);
         txt_student.setText(item.name);
         return  v;
+    }
+
+    private void populate_remove(String msg,int index){
+        if(msg.equals("Success")){
+            items.remove(index);
+        }
+        Utility.showMessage(msg,context);
+        notifyDataSetChanged();
+    }
+
+
+    class RemoveStudentFromGroup extends AsyncTask<String,Void,ResObject>{
+        int index;
+        public RemoveStudentFromGroup(int index){
+            this.index =index;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            GroupDetailsActivity.showPrg("Requesting...");
+        }
+
+        @Override
+        protected void onPostExecute(ResObject response) {
+            super.onPostExecute(response);
+            GroupDetailsActivity.hidePrg();
+            if(response.validity.equals(Constants.VALIDITY_SUCCESS)){
+                populate_remove(response.msg,index);
+            }
+            else{
+                Utility.showMessage(response.msg,context);
+            }
+        }
+
+        @Override
+        protected ResObject doInBackground(String... params) {
+            return new WSCalls(context).remove_student_from_group(params[0],params[1]);
+        }
     }
 }

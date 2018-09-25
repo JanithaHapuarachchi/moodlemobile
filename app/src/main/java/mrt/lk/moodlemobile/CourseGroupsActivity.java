@@ -44,9 +44,14 @@ public class CourseGroupsActivity extends AppCompatActivity {
             }
         });
 
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         setSampleData();
         list_course_groups.setAdapter(new CourseGroupsAdapter(getApplicationContext(),groups, CourseGroupsAdapter.GENERAL_GROUP));
-
     }
 
     private void setSampleData(){

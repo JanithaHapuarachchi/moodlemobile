@@ -3,6 +3,7 @@ package mrt.lk.moodlemobile;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,18 +15,26 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 import mrt.lk.moodlemobile.adapters.CourseGroupsAdapter;
 import mrt.lk.moodlemobile.adapters.GroupProjectsAdapter;
 import mrt.lk.moodlemobile.data.CourseGroupItem;
 import mrt.lk.moodlemobile.data.GroupProjectItem;
+import mrt.lk.moodlemobile.data.ResObject;
+import mrt.lk.moodlemobile.utils.Constants;
 import mrt.lk.moodlemobile.utils.ProgressBarController;
 import mrt.lk.moodlemobile.utils.Utility;
+import mrt.lk.moodlemobile.utils.WSCalls;
 
 public class CourseProjectsActivity extends AppCompatActivity {
 
     ProgressBarController prgController;
+    WSCalls wsCalls;
     TextView txt_group_name;
     ImageView img_add_project;
     ListView list_group_projects;
@@ -43,6 +52,7 @@ public class CourseProjectsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course_projects);
         getSupportActionBar().hide();
+        wsCalls = new WSCalls(getApplicationContext());
 
       //  if (savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();
@@ -51,7 +61,7 @@ public class CourseProjectsActivity extends AppCompatActivity {
                 SELECTED_GROUP_NAME= "";
             } else {
                 SELECTED_GROUP_ID= extras.getString("SELECTED_GROUP_ID");
-                SELECTED_GROUP_NAME= extras.getString("GIVEN_GROUP_NAME");
+                SELECTED_GROUP_NAME= extras.getString("SELECTED_GROUP_NAME");
             }
 //        } else {
 //            SELECTED_GROUP_ID= (String) savedInstanceState.getSerializable("SELECTED_GROUP_ID");
@@ -72,10 +82,7 @@ public class CourseProjectsActivity extends AppCompatActivity {
             }
         });
 
-        setSampleData();
-        Log.e("MOODLEMOBILE",projects.toString());
-        groupProjectsAdapter = new GroupProjectsAdapter(getApplicationContext(),projects);
-        list_group_projects.setAdapter(groupProjectsAdapter);
+
 
         list_group_projects.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -105,6 +112,15 @@ public class CourseProjectsActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setSampleData();
+       // new CallGroupProjects().execute(SELECTED_GROUP_ID);
+        Log.e("MOODLEMOBILE",projects.toString());
+        groupProjectsAdapter = new GroupProjectsAdapter(getApplicationContext(),projects);
+        list_group_projects.setAdapter(groupProjectsAdapter);
+    }
 
     private void setSampleData(){
         projects = new ArrayList<GroupProjectItem>();
@@ -145,6 +161,7 @@ public class CourseProjectsActivity extends AppCompatActivity {
                     if (project_name.getText().toString().length() > 1) {
                         entered_project_name = project_name.getText().toString();
                                 addProjectDialog.dismiss();
+                        //new AddGroupProject().execute(SELECTED_GROUP_ID,entered_project_name);
                         add_new_project_to_list("33");
                                 Utility.showMessage("Successfully Added the Project", context);
 
@@ -171,5 +188,99 @@ public class CourseProjectsActivity extends AppCompatActivity {
         projects.add(newItem);
         groupProjectsAdapter = new GroupProjectsAdapter(getApplicationContext(),projects);
         list_group_projects.setAdapter(groupProjectsAdapter);
+    }
+
+    private void populate_projects(String msg){
+        Log.e("MOODLEMOBILE",projects.toString());
+        projects = new ArrayList<GroupProjectItem>();
+        GroupProjectItem item;
+        try {
+            JSONObject jo = new JSONObject(msg);
+            if(jo.getString("msg").equals("Success")){
+                JSONArray jarray =  jo.getJSONArray("data");
+                JSONObject jobj;
+
+                for(int i=0; i< jarray.length();i++){
+                    jobj = jarray.getJSONObject(i);
+                    item  =new GroupProjectItem();
+                    item.project_id = jobj.getString("projectid");
+                    item.project_name = jobj.getString("projectname");
+                    projects.add(item);
+                }
+            }
+            else{
+                Utility.showMessage(jo.getString("msg"),getApplicationContext());
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        groupProjectsAdapter = new GroupProjectsAdapter(getApplicationContext(),projects);
+        list_group_projects.setAdapter(groupProjectsAdapter);
+    }
+
+    private void populate_add_project(String msg){
+        try {
+            JSONObject jo = new JSONObject(msg);
+            if(jo.getString("msg").equals("Success")){
+                add_new_project_to_list(jo.getString("data"));
+            }
+            else{
+                Utility.showMessage(jo.getString("msg"),getApplicationContext());
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    class CallGroupProjects extends AsyncTask <String,Void,ResObject>{
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            prgController.showProgressBar("Loading Projects ...");
+        }
+
+        @Override
+        protected void onPostExecute(ResObject response) {
+            super.onPostExecute(response);
+            prgController.hideProgressBar();
+            if(response.validity.equals(Constants.VALIDITY_SUCCESS)){
+                populate_projects(response.msg);
+            }
+            else{
+                Utility.showMessage(response.msg,getApplicationContext());
+            }
+        }
+
+        @Override
+        protected ResObject doInBackground(String... params) {
+            return wsCalls.course_group_projects(params[0]);
+        }
+    }
+
+    class AddGroupProject extends AsyncTask<String,Void,ResObject>{
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            prgController.showProgressBar("Sending Data ...");
+        }
+
+        @Override
+        protected void onPostExecute(ResObject response) {
+            super.onPostExecute(response);
+            prgController.hideProgressBar();
+            if(response.validity.equals(Constants.VALIDITY_SUCCESS)){
+                populate_add_project(response.msg);
+            }
+            else{
+                Utility.showMessage(response.msg,getApplicationContext());
+            }
+        }
+
+        @Override
+        protected ResObject doInBackground(String... params) {
+            return wsCalls.add_group_project(params[0],params[1]);
+        }
     }
 }

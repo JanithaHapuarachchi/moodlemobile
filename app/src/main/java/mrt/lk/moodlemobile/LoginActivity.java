@@ -16,12 +16,14 @@ import mrt.lk.moodlemobile.data.ResObject;
 import mrt.lk.moodlemobile.utils.Constants;
 import mrt.lk.moodlemobile.utils.ProgressBarController;
 import mrt.lk.moodlemobile.utils.Utility;
+import mrt.lk.moodlemobile.utils.WSCalls;
 
 public class LoginActivity extends AppCompatActivity {
 
     ProgressBarController prgController;
     EditText txt_username,txt_password;
     Button btn_login;
+    WSCalls ws;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,14 +33,15 @@ public class LoginActivity extends AppCompatActivity {
         txt_password = (EditText)findViewById(R.id.txt_password);
         btn_login = (Button)findViewById(R.id.btn_login);
         prgController = new ProgressBarController(this);
+        ws = new WSCalls(getApplicationContext());
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String uname = txt_username.getText().toString();
                 String pswrd  =txt_password.getText().toString();
-                gotoMenu();
+               // gotoMenu();
                 // startActivity(new Intent(getApplicationContext(),CourseGroupsActivity.class));
-               // checkLogin(uname,pswrd);
+                checkLogin(uname,pswrd);
 
 
 
@@ -55,6 +58,21 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    public void validateLogin(String response){
+        try {
+            JSONObject obj = new JSONObject(response);
+            if(obj.has("error")){
+                Utility.showMessage(obj.getString("error"),getApplicationContext());
+            }
+            else{
+                gotoMenu();
+            }
+        } catch (JSONException e) {
+            Utility.showMessage(e.getMessage(),getApplicationContext());
+        }
+
+    }
+
     class CallAuthenticate extends AsyncTask<String,Void,ResObject> {
 
         @Override
@@ -66,21 +84,22 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(ResObject response) {
             super.onPostExecute(response);
-//            if(response.validity.equals(Constants.VALIDITY_SUCCESS)){
-//                checkAutehnticate(response);
-//            }
-//            else{
-//                Utility.showMessage(response.msg,getApplicationContext());
-//            }
-//            Log.e("RES", response.toString());
+            Log.e("RES", response.toString());
             prgController.hideProgressBar();
-            gotoMenu();
+            if(response.validity.equals(Constants.VALIDITY_SUCCESS)){
+               validateLogin(response.msg);
+            }
+            else{
+                Utility.showMessage(response.msg,getApplicationContext());
+            }
+
+            //gotoMenu();
         }
 
         @Override
         protected ResObject doInBackground(String... params) {
          //   return wscalls.autherise_user(params[0],params[1]);
-            return new ResObject();
+            return ws.checkLogin(params[0],params[1]);
         }
     }
 
