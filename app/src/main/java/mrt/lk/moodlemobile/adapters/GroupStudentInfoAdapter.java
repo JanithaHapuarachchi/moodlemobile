@@ -12,6 +12,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 import mrt.lk.moodlemobile.CourseProjectsActivity;
@@ -95,11 +98,17 @@ public class GroupStudentInfoAdapter extends ArrayAdapter {
     }
 
     private void populate_remove(String msg,int index){
-        if(msg.equals("Success")){
-            items.remove(index);
+        try {
+            JSONObject jo = new JSONObject(msg);
+            if(jo.getString("msg").equals("Success")){
+                items.remove(index);
+            }
+            Utility.showMessage(jo.getString("msg"),context);
+            notifyDataSetChanged();
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-        Utility.showMessage(msg,context);
-        notifyDataSetChanged();
+
     }
 
 

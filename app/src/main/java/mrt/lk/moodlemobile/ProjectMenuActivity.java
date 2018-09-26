@@ -3,6 +3,7 @@ package mrt.lk.moodlemobile;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -14,6 +15,9 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 import mrt.lk.moodlemobile.adapters.GroupProjectsAdapter;
@@ -22,7 +26,11 @@ import mrt.lk.moodlemobile.data.CourseGroupItem;
 import mrt.lk.moodlemobile.data.GroupProjectItem;
 import mrt.lk.moodlemobile.data.GroupSubProjectItem;
 import mrt.lk.moodlemobile.data.LoggedUser;
+import mrt.lk.moodlemobile.data.ResObject;
+import mrt.lk.moodlemobile.utils.Constants;
+import mrt.lk.moodlemobile.utils.ProgressBarController;
 import mrt.lk.moodlemobile.utils.Utility;
+import mrt.lk.moodlemobile.utils.WSCalls;
 
 public class ProjectMenuActivity extends AppCompatActivity {
 
@@ -40,11 +48,14 @@ public class ProjectMenuActivity extends AppCompatActivity {
     GroupSubProjectItem newItem;
     static String SELECTED_GROUP_ID,SELECTED_GROUP_NAME,PROJECT_NAME,PROJECT_ID;
     boolean IS_PROJECT;
+    WSCalls wsCalls;
+    ProgressBarController prgController;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_project_menu);
-
+        prgController = new ProgressBarController(this);
+        wsCalls = new WSCalls(getApplicationContext());
         Bundle extras = getIntent().getExtras();
         if(extras == null) {
             SELECTED_GROUP_ID= "";
@@ -260,8 +271,9 @@ public class ProjectMenuActivity extends AppCompatActivity {
                     if (project_name.getText().toString().length() > 1) {
                         entered_project_name = project_name.getText().toString();
                         addProjectDialog.dismiss();
-                        add_new_subproject_to_list("33");
-                        Utility.showMessage("Successfully Added the Sub Project", context);
+                        new AddSubProject().execute(entered_project_name);
+                      //  add_new_subproject_to_list("33");
+                      //  Utility.showMessage("Successfully Added the Sub Project", context);
 
                     } else {
                         Utility.showMessage("Project Name Required", context);
@@ -286,5 +298,42 @@ public class ProjectMenuActivity extends AppCompatActivity {
         projects.add(newItem);
         adapter = new GroupSubProjectAdapter(getApplicationContext(),projects);
         list_subprojects.setAdapter(adapter);
+    }
+
+    private void populate_add_sub_project(String msg){
+        try {
+            JSONObject jo = new JSONObject(msg);
+            if(jo.getString("msg").equals("Success")){
+                add_new_subproject_to_list(jo.getString("data"));
+            }
+            Utility.showMessage(jo.getString("msg"),getApplicationContext());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    class AddSubProject extends AsyncTask<String,Void,ResObject>{
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            prgController.showProgressBar("Sending..");
+        }
+
+        @Override
+        protected void onPostExecute(ResObject response) {
+            super.onPostExecute(response);
+            prgController.hideProgressBar();
+            if(response.validity.equals(Constants.VALIDITY_SUCCESS)){
+                populate_add_sub_project(response.msg);
+            }
+            else{
+                Utility.showMessage(response.msg,getApplicationContext());
+            }
+        }
+
+        @Override
+        protected ResObject doInBackground(String... params) {
+            return wsCalls.add_group_subproject(params[0],PROJECT_ID);
+        }
     }
 }

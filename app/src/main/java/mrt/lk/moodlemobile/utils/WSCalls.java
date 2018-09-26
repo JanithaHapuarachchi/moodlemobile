@@ -66,6 +66,77 @@ public class WSCalls {
     }
 
 
+
+    public ResObject participant_evaluation_results(String student_id){
+        ResObject res_object = new ResObject();
+        String response;
+        String request  =  "participant_id="+student_id;
+        try {
+
+            response = RequestHandler.sendPost(request,Constants.participant_evaluation_results,context);
+            res_object.validity = Constants.VALIDITY_SUCCESS;
+            res_object.msg = response;
+        } catch (Exception e) {
+            res_object.validity = Constants.VALIDITY_FAILED;
+            res_object.msg = e.getMessage();
+        }
+
+        return res_object;
+    }
+
+
+    public ResObject add_group_project_participant_marks(String project_id,String participant_id,String evaluator_id,String marks,String comment,String time){
+        ResObject res_object = new ResObject();
+        String response;
+        String request  =  "project_id="+project_id+"&participant_id="+participant_id+"&evaluator_id="+evaluator_id+"&marks="+marks+"&comment="+comment+"&time="+time;
+        try {
+
+            response = RequestHandler.sendPost(request,Constants.add_group_project_participant_marks,context);
+            res_object.validity = Constants.VALIDITY_SUCCESS;
+            res_object.msg = response;
+        } catch (Exception e) {
+            res_object.validity = Constants.VALIDITY_FAILED;
+            res_object.msg = e.getMessage();
+        }
+
+        return res_object;
+    }
+
+    public ResObject remove_group_project_evaluation_group(String evaluator_gid,String project_id,String evaluatee_gid){
+        ResObject res_object = new ResObject();
+        String response;
+        String request  =  "evaluator_gid="+evaluator_gid+"&project_id="+project_id+"&evaluatee_gid="+evaluatee_gid;
+        try {
+
+            response = RequestHandler.sendPost(request,Constants.remove_group_project_evaluation_group,context);
+            res_object.validity = Constants.VALIDITY_SUCCESS;
+            res_object.msg = response;
+        } catch (Exception e) {
+            res_object.validity = Constants.VALIDITY_FAILED;
+            res_object.msg = e.getMessage();
+        }
+
+        return res_object;
+    }
+
+
+    public ResObject add_group_project_evaluation_group(String evaluator_gid,String project_id,String evaluatee_gid){
+        ResObject res_object = new ResObject();
+        String response;
+        String request  =  "evaluator_gid="+evaluator_gid+"&project_id="+project_id+"&evaluatee_gid="+evaluatee_gid;
+        try {
+
+            response = RequestHandler.sendPost(request,Constants.add_group_project_evaluation_group,context);
+            res_object.validity = Constants.VALIDITY_SUCCESS;
+            res_object.msg = response;
+        } catch (Exception e) {
+            res_object.validity = Constants.VALIDITY_FAILED;
+            res_object.msg = e.getMessage();
+        }
+
+        return res_object;
+    }
+
     public ResObject remove_student_from_group(String group_id,String student_id){
         ResObject res_object = new ResObject();
         String response;
@@ -90,6 +161,23 @@ public class WSCalls {
         try {
 
             response = RequestHandler.sendPost(request,Constants.course_group_students,context);
+            res_object.validity = Constants.VALIDITY_SUCCESS;
+            res_object.msg = response;
+        } catch (Exception e) {
+            res_object.validity = Constants.VALIDITY_FAILED;
+            res_object.msg = e.getMessage();
+        }
+
+        return res_object;
+    }
+
+    public ResObject add_group_subproject(String subproject_name,String project_id){
+        ResObject res_object = new ResObject();
+        String response;
+        String request  =  "subproject_name="+subproject_name+"&project_id="+project_id;
+        try {
+
+            response = RequestHandler.sendPost(request,Constants.add_group_subproject,context);
             res_object.validity = Constants.VALIDITY_SUCCESS;
             res_object.msg = response;
         } catch (Exception e) {

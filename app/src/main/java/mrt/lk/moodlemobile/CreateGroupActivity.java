@@ -235,10 +235,21 @@ public class CreateGroupActivity extends AppCompatActivity {
     }
 
     private void populate_addgroup_data(String msg){
-        if(IS_CREATE_GROUP){
-            finish();
+
+        try {
+            JSONObject jo = new JSONObject(msg);
+            if(jo.getString("msg").equals("Success")){
+                if(IS_CREATE_GROUP){
+                    finish();
+                }
+                rearrange_original_participants();
+            }
+            Utility.showMessage(jo.getString("msg"),getApplicationContext());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-        rearrange_original_participants();
+
     }
 
     class AddGroupStudets extends AsyncTask<String,Void,ResObject>{

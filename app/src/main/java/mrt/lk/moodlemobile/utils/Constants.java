@@ -13,7 +13,7 @@ public class Constants {
     public static final String USER_NAME = "USER_NAME";
     public static final String USER_PASSWORD = "USER_PASSWORD";
     public static final String FLI_SHARED_PREFS = "FLI_SHARED_PREFS";
-    public static final String DATE_FORMAT ="dd-MM-yyyy";
+    public static final String DATE_FORMAT ="yyyy-MM-dd HH.mm.ss";
     public static final String AUTHENTICATION_KEY ="AUTHENTICATION_KEY";
     public static final String USER_ID ="USER_ID";
     public static final String STAFF_ID ="STAFF_ID";
@@ -35,6 +35,11 @@ public class Constants {
     public static String confirm_group_students = "confirm_group_students.php";
     public static String course_group_students = "course_group_students.php";
     public static String remove_student_from_group = "remove_student_from_group.php";
+    public static String participant_evaluation_results = "participant_evaluation_results.php";
+    public static String add_group_project_evaluation_group = "add_group_project_evaluation_group.php";
+    public static String remove_group_project_evaluation_group = "remove_group_project_evaluation_group.php";
+    public static String add_group_project_participant_marks = "add_group_project_participant_marks.php";
+    public static String add_group_subproject = "add_group_subproject.php";
 
 
 

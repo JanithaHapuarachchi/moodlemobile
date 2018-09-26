@@ -2,6 +2,7 @@ package mrt.lk.moodlemobile;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -11,15 +12,24 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import mrt.lk.moodlemobile.adapters.DairyAdapter;
 import mrt.lk.moodlemobile.adapters.ProjectWorksAdapter;
+import mrt.lk.moodlemobile.data.LoggedUser;
 import mrt.lk.moodlemobile.data.ParticipantItem;
+import mrt.lk.moodlemobile.data.ResObject;
 import mrt.lk.moodlemobile.data.WorkCommentItem;
 import mrt.lk.moodlemobile.data.WorkSeenItem;
+import mrt.lk.moodlemobile.utils.Constants;
 import mrt.lk.moodlemobile.utils.ProgressBarController;
 import mrt.lk.moodlemobile.utils.Utility;
+import mrt.lk.moodlemobile.utils.WSCalls;
 
 public class DiaryActivity extends AppCompatActivity {
 
@@ -27,6 +37,7 @@ public class DiaryActivity extends AppCompatActivity {
     EditText txt_message;
     ListView list_works;
     ProgressBarController prgController;
+    WSCalls wsCalls;
     static String SELECTED_PARTICIPANT_ID,SELECTED_PARTICIPANT_NAME,PROJECT_NAME,PROJECT_ID;
     ArrayList<WorkCommentItem> works;
     WorkCommentItem work;
@@ -39,6 +50,7 @@ public class DiaryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_diary);
         prgController = new ProgressBarController(this);
+        wsCalls = new WSCalls(getApplicationContext());
         btn_mark = (Button)findViewById(R.id.btn_mark);
         btn_send = (Button)findViewById(R.id.btn_send);
         txt_message = (EditText)findViewById(R.id.txt_message);
@@ -105,8 +117,8 @@ public class DiaryActivity extends AppCompatActivity {
                             entered_comment = "";
                         }
                         evaluateStudentDialog.dismiss();
-
-                        Utility.showMessage("Successfully Added Results", context);
+                        new SendEvalResults().execute(txt_marks.getText().toString(),txt_comment.getText().toString());
+                       // Utility.showMessage("Successfully Added Results", context);
 
                     } else {
                         Utility.showMessage("Enter Result", context);
@@ -147,6 +159,43 @@ public class DiaryActivity extends AppCompatActivity {
             work.participant =p;
             work.seen_list = new ArrayList<WorkSeenItem>();
             works.add(work);
+        }
+    }
+
+    private void populte_eval_response(String msg){
+        try {
+            JSONObject jo = new JSONObject(msg);
+            Utility.showMessage(jo.getString("msg"),getApplicationContext());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    class SendEvalResults extends AsyncTask<String,Void,ResObject>{
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            prgController.showProgressBar("Sending...");
+        }
+
+        @Override
+        protected void onPostExecute(ResObject response) {
+            super.onPostExecute(response);
+            prgController.hideProgressBar();
+            if(response.validity.equals(Constants.VALIDITY_SUCCESS)){
+                populte_eval_response(response.msg);
+            }
+            else{
+                Utility.showMessage(response.msg,getApplicationContext());
+            }
+        }
+
+        @Override
+        protected ResObject doInBackground(String... params) {
+            SimpleDateFormat df = new SimpleDateFormat(Constants.DATE_FORMAT);
+            String str_today = df.format(Calendar.getInstance().getTime());
+            return wsCalls.add_group_project_participant_marks(PROJECT_ID,SELECTED_PARTICIPANT_ID, LoggedUser.id,params[0],params[1],str_today);
         }
     }
 }

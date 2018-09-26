@@ -12,6 +12,7 @@ public class LoggedUser {
     public static String name ="AAA";
 
     public static String course_id = "1" ;
+    public static String group_id = "2" ;
 
 
 }

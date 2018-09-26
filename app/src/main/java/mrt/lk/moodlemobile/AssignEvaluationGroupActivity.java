@@ -14,10 +14,10 @@ import mrt.lk.moodlemobile.utils.ProgressBarController;
 
 public class AssignEvaluationGroupActivity extends AppCompatActivity {
 
-    String SELECTED_GROUP_ID,SELECTED_GROUP_NAME,PROJECT_ID,PROJECT_NAME;
+    public static String SELECTED_GROUP_ID,SELECTED_GROUP_NAME,PROJECT_ID,PROJECT_NAME;
     TextView txt_title;
     ExpandableListView list_assign_remove_groups;
-    ProgressBarController prgController;
+    public static ProgressBarController prgController;
     ArrayList<String> header;
     HashMap<String,ArrayList<CourseGroupItem>>childrendata;
     ArrayList<CourseGroupItem>allocatedgroups,availablegroups;
@@ -48,6 +48,14 @@ public class AssignEvaluationGroupActivity extends AppCompatActivity {
         adapter = new AssignEvalutionGroupAdapter(getApplicationContext(),header,childrendata);
         list_assign_remove_groups.setAdapter(adapter);
 
+    }
+
+    public static void show_pgr(String msg){
+        prgController.showProgressBar(msg);
+    }
+
+    public static void hide_pgr(){
+        prgController.hideProgressBar();
     }
 
     private void setSampleData(){
