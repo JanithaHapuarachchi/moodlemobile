@@ -31,9 +31,9 @@
         <Button
             android:id="@+id/btn_attach"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="35dp"
             android:layout_weight="1"
-            android:background="@drawable/ic_attach"/>
+            android:background="@drawable/ic_attach" />
         <Button
             android:id="@+id/btn_send"
             android:layout_width="0dp"

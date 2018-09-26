@@ -30,7 +30,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:background="@color/white"
-                    android:textColor="@color/app_background_shadow"
+                    android:textColor="@color/colorPrimaryDark"
                     android:layout_centerVertical="true"
                     android:text="Confirm"/>
                 <TextView
@@ -53,12 +53,11 @@
 
         <ListView
 
-            android:layout_margin="5dp"
+            android:id="@+id/list_students"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/list_students"
-            android:dividerHeight="2dp"
-            ></ListView>
+            android:layout_margin="5dp"
+            android:dividerHeight="2dp"></ListView>
 
     </LinearLayout>
 
@@ -71,7 +70,7 @@
         android:layout_margin="16dp"
         android:src="@drawable/ic_add"
         android:tint="@color/app_background_shadow"
-        android:backgroundTint="@color/white"/>
+        android:backgroundTint="@color/colorPrimary"/>
     <include layout="@layout/layout_progress_bar" />
 
 </RelativeLayout>
