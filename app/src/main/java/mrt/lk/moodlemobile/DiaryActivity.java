@@ -9,9 +9,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -37,6 +39,7 @@ public class DiaryActivity extends AppCompatActivity {
     EditText txt_message;
     ListView list_works;
     ProgressBarController prgController;
+    LinearLayout layout_msg;
     WSCalls wsCalls;
     static String SELECTED_PARTICIPANT_ID,SELECTED_PARTICIPANT_NAME,PROJECT_NAME,PROJECT_ID;
     ArrayList<WorkCommentItem> works;
@@ -55,6 +58,7 @@ public class DiaryActivity extends AppCompatActivity {
         btn_send = (Button)findViewById(R.id.btn_send);
         txt_message = (EditText)findViewById(R.id.txt_message);
         list_works = (ListView)findViewById(R.id.list_works);
+        layout_msg = (LinearLayout)findViewById(R.id.layout_msg);
         Bundle extras = getIntent().getExtras();
         if(extras == null) {
             SELECTED_PARTICIPANT_ID= "";
@@ -68,6 +72,18 @@ public class DiaryActivity extends AppCompatActivity {
             PROJECT_NAME = extras.getString("PROJECT_NAME");
         }
         getSupportActionBar().setTitle("Diary of "+SELECTED_PARTICIPANT_NAME+" in " + PROJECT_NAME);
+
+        if(LoggedUser.status.equals(LoggedUser.AS_EVALUATE)){
+            btn_mark.setVisibility(View.VISIBLE);
+            layout_msg.setVisibility(View.GONE);
+        }
+        else{
+            btn_mark.setVisibility(View.GONE);
+            layout_msg.setVisibility(View.VISIBLE);
+        }
+
+        //works = new ArrayList<>();
+       // new CallDiary().execute();
         setSampleData();
         adapter = new DairyAdapter(getApplicationContext(),works,SELECTED_PARTICIPANT_ID);
         list_works.setAdapter(adapter);
@@ -196,6 +212,88 @@ public class DiaryActivity extends AppCompatActivity {
             SimpleDateFormat df = new SimpleDateFormat(Constants.DATE_FORMAT);
             String str_today = df.format(Calendar.getInstance().getTime());
             return wsCalls.add_group_project_participant_marks(PROJECT_ID,SELECTED_PARTICIPANT_ID, LoggedUser.id,params[0],params[1],str_today);
+        }
+    }
+
+    private void populate_diary(String msg){
+        JSONObject jo = null;
+        try {
+            jo = new JSONObject(msg);
+            JSONArray ja,jseens;
+            JSONObject jwork,jseen;
+            WorkCommentItem work;
+            ParticipantItem p,ps;
+            WorkSeenItem wsi;
+            ArrayList<WorkSeenItem>ws;
+            works = new ArrayList<WorkCommentItem>();
+            if(jo.getString("msg").equals("Success")){
+                ja = jo.getJSONArray("data");
+
+                for(int i=0;i< ja.length();i++){
+                    jwork = ja.getJSONObject(i);
+                    work = new WorkCommentItem();
+                    work.time = jwork.getString("time");
+                    work.comment_id = jwork.getString("comment_id");
+                    work.project_name = jwork.getString("project_name");
+                    p = new ParticipantItem();
+                    p.id = jwork.getString("participant_id");
+                    p.name = jwork.getString("participant_name");
+                    work.participant =p;
+                    work.comment_type = jwork.getString("comment_type");
+                    work.comment = jwork.getString("comment");
+                    work.comment_location = jwork.getString("comment");
+                    work.comment_id = jwork.getString("comment_id");
+                    work.isDiary = jwork.getBoolean("is_diary");
+                    ws = new ArrayList<WorkSeenItem>();
+                    jseens = jwork.getJSONArray("seen_list");
+                    for(int j=0;j<jseens.length();j++){
+                        jseen = jseens.getJSONObject(j);
+                        wsi = new WorkSeenItem();
+                        wsi.time =jseen.getString("time");
+                        ps = new ParticipantItem();
+                        ps.name = jseen.getString("participant_name");
+                        ps.id = jseen.getString("participant_id");
+                        wsi.name =  jseen.getString("participant_name");
+                        wsi.id = jseen.getString("participant_id");
+                        ws.add(wsi);
+                    }
+                    work.seen_list = ws;
+                    works.add(work);
+                }
+            }
+            else{
+                Utility.showMessage(jo.getString("msg"),getApplicationContext());
+            }
+            adapter = new DairyAdapter(getApplicationContext(),works,SELECTED_PARTICIPANT_ID);
+            list_works.setAdapter(adapter);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    class CallDiary extends AsyncTask <String,Void,ResObject>{
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            prgController.showProgressBar("Loading...");
+        }
+
+        @Override
+        protected void onPostExecute(ResObject response) {
+            super.onPostExecute(response);
+            prgController.hideProgressBar();
+            if(response.validity.equals(Constants.VALIDITY_SUCCESS)){
+                populate_diary(response.msg);
+            }
+            else{
+                Utility.showMessage(response.msg,getApplicationContext());
+            }
+        }
+
+        @Override
+        protected ResObject doInBackground(String... params) {
+            return wsCalls.group_project_student_diary(PROJECT_ID,SELECTED_PARTICIPANT_ID);
         }
     }
 }

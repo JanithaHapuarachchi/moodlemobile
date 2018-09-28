@@ -40,6 +40,15 @@ public class Constants {
     public static String remove_group_project_evaluation_group = "remove_group_project_evaluation_group.php";
     public static String add_group_project_participant_marks = "add_group_project_participant_marks.php";
     public static String add_group_subproject = "add_group_subproject.php";
+    public static String allocated_evaluation_groups = "allocated_evaluation_groups.php";
+    public static String course_groups = "course_groups.php";
+    public static String groupproject_subprojects = "groupproject_subprojects.php";
+    public static String add_comment_report = "add_comment_report.php";
+    public static String add_like_unlike_report = "add_like_unlike_report.php";
+    public static String group_project_student_diary = "group_project_student_diary.php";
+    public static String groupproject_subproject_final_report_details = "groupproject_subproject_final_report_details.php";
+    public static String group_project_final_report_details = "group_project_final_report_details.php";
+    public static String participant_details = "participant_details.php";
 
 
 

@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -103,6 +104,19 @@ public class ProjectMenuActivity extends AppCompatActivity {
             }
         });
 
+        if(LoggedUser.roleshortname.equals(LoggedUser.AS_TEACHER)){
+            btn_set_evaluation_group.setVisibility(View.VISIBLE);
+        }
+        else{
+            btn_set_evaluation_group.setVisibility(View.GONE);
+        }
+        if(LoggedUser.status.equals(LoggedUser.AS_EVALUATE)){
+            btn_evaluate.setVisibility(View.VISIBLE);
+        }
+        else{
+            btn_evaluate.setVisibility(View.GONE);
+        }
+
         if(!IS_PROJECT){
             btn_goto_diary.setVisibility(View.GONE);
             btn_set_evaluation_group.setVisibility(View.GONE);
@@ -110,10 +124,13 @@ public class ProjectMenuActivity extends AppCompatActivity {
             layout_subprojects.setVisibility(View.GONE);
             list_subprojects.setVisibility(View.GONE);
         }
-        setSampleData();
-        setSampleEvaluationGroups();
-        adapter = new GroupSubProjectAdapter(getApplicationContext(),projects);
-        list_subprojects.setAdapter(adapter);
+        else {
+            new CallSubProjects().execute(PROJECT_ID);
+            setSampleData();
+            setSampleEvaluationGroups();
+            adapter = new GroupSubProjectAdapter(getApplicationContext(), projects);
+            list_subprojects.setAdapter(adapter);
+        }
         img_add_sub_group.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -334,6 +351,57 @@ public class ProjectMenuActivity extends AppCompatActivity {
         @Override
         protected ResObject doInBackground(String... params) {
             return wsCalls.add_group_subproject(params[0],PROJECT_ID);
+        }
+    }
+
+
+    private void populate_sub_projects(String msg){
+        try {
+            JSONObject jo = new JSONObject(msg);
+            if(jo.getString("msg").equals("Success")){
+                JSONArray ja = jo.getJSONArray("data");
+                JSONObject j;
+                GroupSubProjectItem item;
+                for(int i=0;i<ja.length();i++){
+                    j = ja.getJSONObject(i);
+                    item = new GroupSubProjectItem();
+                    item.project_id= j.getString("subprojectid");
+                    item.project_name = j.getString("subprojectname");
+                    projects.add(item);
+                }
+            }
+            else{
+                Utility.showMessage(jo.getString("msg"),getApplicationContext());
+            }
+            adapter = new GroupSubProjectAdapter(getApplicationContext(), projects);
+            list_subprojects.setAdapter(adapter);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+    class CallSubProjects extends AsyncTask <String,Void,ResObject>{
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            prgController.showProgressBar("Loading...");
+        }
+
+        @Override
+        protected void onPostExecute(ResObject response) {
+            super.onPostExecute(response);
+            prgController.hideProgressBar();
+            if(response.validity.equals(Constants.VALIDITY_SUCCESS)){
+                populate_sub_projects(response.msg);
+            }
+            else{
+                Utility.showMessage(response.msg,getApplicationContext());
+            }
+        }
+
+        @Override
+        protected ResObject doInBackground(String... params) {
+            projects = new ArrayList<GroupSubProjectItem>();
+            return wsCalls.groupproject_subprojects(params[0]);
         }
     }
 }

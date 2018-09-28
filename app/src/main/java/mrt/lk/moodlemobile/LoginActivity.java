@@ -12,6 +12,7 @@ import android.widget.EditText;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import mrt.lk.moodlemobile.data.LoggedUser;
 import mrt.lk.moodlemobile.data.ResObject;
 import mrt.lk.moodlemobile.utils.Constants;
 import mrt.lk.moodlemobile.utils.ProgressBarController;
@@ -65,6 +66,7 @@ public class LoginActivity extends AppCompatActivity {
                 Utility.showMessage(obj.getString("error"),getApplicationContext());
             }
             else{
+                LoggedUser.id = txt_username.getText().toString();
                 gotoMenu();
             }
         } catch (JSONException e) {

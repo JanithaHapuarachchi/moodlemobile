@@ -18,6 +18,7 @@ import mrt.lk.moodlemobile.CourseProjectsActivity;
 import mrt.lk.moodlemobile.GroupDetailsActivity;
 import mrt.lk.moodlemobile.R;
 import mrt.lk.moodlemobile.data.CourseGroupItem;
+import mrt.lk.moodlemobile.data.LoggedUser;
 
 /**
  * Created by janithah on 9/21/2018.
@@ -64,6 +65,8 @@ public class CourseGroupsAdapter extends ArrayAdapter {
                 Intent i = new Intent(context, CourseProjectsActivity.class);
                 i.putExtra("SELECTED_GROUP_ID",item.group_id);
                 i.putExtra("SELECTED_GROUP_NAME",item.group_name);
+                i.putExtra("IS_EVALUATE",true);
+                LoggedUser.status = LoggedUser.AS_EVALUATE;
                 context.startActivity(i);
             }
         });
@@ -74,6 +77,8 @@ public class CourseGroupsAdapter extends ArrayAdapter {
                 Intent i = new Intent(context, GroupDetailsActivity.class);
                 i.putExtra("SELECTED_GROUP_ID",item.group_id);
                 i.putExtra("SELECTED_GROUP_NAME",item.group_name);
+                i.putExtra("IS_EVALUATE",true);
+                LoggedUser.status = LoggedUser.AS_EVALUATE;
                 context.startActivity(i);
             }
         });

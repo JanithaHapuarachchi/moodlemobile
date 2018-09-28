@@ -33,10 +33,10 @@ public class ProjectReportActivity extends AppCompatActivity {
     ImageView img_upload_report;
     ListView list_reports;
     TextView txt_reports_title;
-    ProgressBarController prgController;
+    public static ProgressBarController prgController;
     ArrayList <ReportItem> reports;
     ContributionReportAdapter adapter;
-    static String PROJECT_NAME,PROJECT_ID;
+    public static String PROJECT_NAME,PROJECT_ID;
     boolean IS_PROJECT;
 
     private static final int REQUEST_DOCUMENTS = 1;

@@ -85,6 +85,93 @@ public class WSCalls {
     }
 
 
+    public ResObject group_project_final_report_details(String project_id){
+        ResObject res_object = new ResObject();
+        String response;
+        String request  =  "project_id="+project_id;
+        try {
+
+            response = RequestHandler.sendPost(request,Constants.group_project_final_report_details,context);
+            res_object.validity = Constants.VALIDITY_SUCCESS;
+            res_object.msg = response;
+        } catch (Exception e) {
+            res_object.validity = Constants.VALIDITY_FAILED;
+            res_object.msg = e.getMessage();
+        }
+
+        return res_object;
+    }
+
+    public ResObject groupproject_subproject_final_report_details(String subproject_id){
+        ResObject res_object = new ResObject();
+        String response;
+        String request  =  "subproject_id="+subproject_id;
+        try {
+
+            response = RequestHandler.sendPost(request,Constants.groupproject_subproject_final_report_details,context);
+            res_object.validity = Constants.VALIDITY_SUCCESS;
+            res_object.msg = response;
+        } catch (Exception e) {
+            res_object.validity = Constants.VALIDITY_FAILED;
+            res_object.msg = e.getMessage();
+        }
+
+        return res_object;
+    }
+
+
+    public ResObject group_project_student_diary(String project_id,String participant_id){
+        ResObject res_object = new ResObject();
+        String response;
+        String request  =  "project_id="+project_id+"&participant_id="+participant_id;
+        try {
+
+            response = RequestHandler.sendPost(request,Constants.group_project_student_diary,context);
+            res_object.validity = Constants.VALIDITY_SUCCESS;
+            res_object.msg = response;
+        } catch (Exception e) {
+            res_object.validity = Constants.VALIDITY_FAILED;
+            res_object.msg = e.getMessage();
+        }
+
+        return res_object;
+    }
+
+
+    public ResObject add_like_unlike_report(String report_id,String participant_id,String type,String is_like,String time){
+        ResObject res_object = new ResObject();
+        String response;
+        String request  =  "report_id="+report_id+"&participant_id="+participant_id+"&type="+type+"&is_like="+is_like+"&time="+time;
+        try {
+            response = RequestHandler.sendPost(request,Constants.add_like_unlike_report,context);
+            res_object.validity = Constants.VALIDITY_SUCCESS;
+            res_object.msg = response;
+        } catch (Exception e) {
+            res_object.validity = Constants.VALIDITY_FAILED;
+            res_object.msg = e.getMessage();
+        }
+
+        return res_object;
+    }
+
+    public ResObject add_comment_report(String report_id,String participant_id,String type,String comment,String time){
+        ResObject res_object = new ResObject();
+        String response;
+        String request  =  "report_id="+report_id+"&participant_id="+participant_id+"&type="+type+"&comment="+comment+"&time="+time;
+        try {
+
+            response = RequestHandler.sendPost(request,Constants.add_comment_report,context);
+            res_object.validity = Constants.VALIDITY_SUCCESS;
+            res_object.msg = response;
+        } catch (Exception e) {
+            res_object.validity = Constants.VALIDITY_FAILED;
+            res_object.msg = e.getMessage();
+        }
+
+        return res_object;
+    }
+
+
     public ResObject add_group_project_participant_marks(String project_id,String participant_id,String evaluator_id,String marks,String comment,String time){
         ResObject res_object = new ResObject();
         String response;
@@ -178,6 +265,76 @@ public class WSCalls {
         try {
 
             response = RequestHandler.sendPost(request,Constants.add_group_subproject,context);
+            res_object.validity = Constants.VALIDITY_SUCCESS;
+            res_object.msg = response;
+        } catch (Exception e) {
+            res_object.validity = Constants.VALIDITY_FAILED;
+            res_object.msg = e.getMessage();
+        }
+
+        return res_object;
+    }
+
+
+
+    public ResObject participant_details(String userid){
+        ResObject res_object = new ResObject();
+        String response;
+        String request  =  "userid="+userid;
+        try {
+
+            response = RequestHandler.sendPost(request,Constants.participant_details,context);
+            res_object.validity = Constants.VALIDITY_SUCCESS;
+            res_object.msg = response;
+        } catch (Exception e) {
+            res_object.validity = Constants.VALIDITY_FAILED;
+            res_object.msg = e.getMessage();
+        }
+
+        return res_object;
+    }
+
+    public ResObject allocated_evaluation_groups(String group_id,String participant_id,String participant_status,String project_id){
+        ResObject res_object = new ResObject();
+        String response;
+        String request  =  "group_id="+group_id+"&participant_id="+participant_id+"&participant_status="+participant_status+"&project_id="+project_id;
+        try {
+
+            response = RequestHandler.sendPost(request,Constants.allocated_evaluation_groups,context);
+            res_object.validity = Constants.VALIDITY_SUCCESS;
+            res_object.msg = response;
+        } catch (Exception e) {
+            res_object.validity = Constants.VALIDITY_FAILED;
+            res_object.msg = e.getMessage();
+        }
+
+        return res_object;
+    }
+
+    public ResObject groupproject_subprojects(String project_id){
+        ResObject res_object = new ResObject();
+        String response;
+        String request  =  "project_id="+project_id;
+        try {
+
+            response = RequestHandler.sendPost(request,Constants.groupproject_subprojects,context);
+            res_object.validity = Constants.VALIDITY_SUCCESS;
+            res_object.msg = response;
+        } catch (Exception e) {
+            res_object.validity = Constants.VALIDITY_FAILED;
+            res_object.msg = e.getMessage();
+        }
+
+        return res_object;
+    }
+
+    public ResObject course_groups(String course_id){
+        ResObject res_object = new ResObject();
+        String response;
+        String request  =  "course_id="+course_id;
+        try {
+
+            response = RequestHandler.sendPost(request,Constants.course_groups,context);
             res_object.validity = Constants.VALIDITY_SUCCESS;
             res_object.msg = response;
         } catch (Exception e) {

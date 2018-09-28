@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -36,6 +37,7 @@ public class ProjectWorksActivity extends AppCompatActivity {
     ArrayList<WorkCommentItem> works;
     WorkCommentItem work;
     ProjectWorksAdapter adapter;
+    LinearLayout layout_send;
 
     private static final int REQUEST_DOCUMENTS = 1;
 
@@ -48,6 +50,7 @@ public class ProjectWorksActivity extends AppCompatActivity {
         btn_send = (Button)findViewById(R.id.btn_send);
         txt_message = (EditText)findViewById(R.id.txt_message);
         list_works = (ListView)findViewById(R.id.list_works);
+        layout_send= (LinearLayout)findViewById(R.id.layout_send);
         Bundle extras = getIntent().getExtras();
         if(extras == null) {
             SELECTED_GROUP_ID= "";
@@ -68,6 +71,13 @@ public class ProjectWorksActivity extends AppCompatActivity {
         else{
             getSupportActionBar().setTitle("Sub project works for " + PROJECT_NAME);
         }
+        if(!LoggedUser.status.equals(LoggedUser.AS_EVALUATE)){
+            layout_send.setVisibility(View.VISIBLE);
+        }
+        else{
+            layout_send.setVisibility(View.GONE);
+        }
+
         btn_attach.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

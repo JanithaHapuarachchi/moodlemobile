@@ -16,6 +16,7 @@
         android:padding="5dp">
 
     <LinearLayout
+        android:id="@+id/layout_msg"
         android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
