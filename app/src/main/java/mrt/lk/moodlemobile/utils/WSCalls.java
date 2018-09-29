@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -248,6 +249,79 @@ public class WSCalls {
         try {
 
             response = RequestHandler.sendPost(request,Constants.course_group_students,context);
+            res_object.validity = Constants.VALIDITY_SUCCESS;
+            res_object.msg = response;
+        } catch (Exception e) {
+            res_object.validity = Constants.VALIDITY_FAILED;
+            res_object.msg = e.getMessage();
+        }
+
+        return res_object;
+    }
+
+    public ResObject group_project_contribution_reports(String project_id){
+        ResObject res_object = new ResObject();
+        String response;
+        String request  =  "project_id="+project_id;
+        try {
+
+            response = RequestHandler.sendPost(request,Constants.group_project_contribution_reports,context);
+            res_object.validity = Constants.VALIDITY_SUCCESS;
+            res_object.msg = response;
+        } catch (Exception e) {
+            res_object.validity = Constants.VALIDITY_FAILED;
+            res_object.msg = e.getMessage();
+        }
+
+        return res_object;
+    }
+
+
+
+
+    public ResObject upload_groupproject_subproject_contribution_report(String participant_id, String project_id, String project_name, File report,String time,String is_final,String is_preview ){
+        ResObject res_object = new ResObject();
+        String response;
+        //String request  =  "subproject_name="+subproject_name+"&project_id="+project_id;
+        try {
+
+            response = RequestHandler.upload_report(Constants.upload_groupproject_subproject_contribution_report,false,participant_id,project_id,project_name,report,time,is_final,is_preview);
+            res_object.validity = Constants.VALIDITY_SUCCESS;
+            res_object.msg = response;
+        } catch (Exception e) {
+            res_object.validity = Constants.VALIDITY_FAILED;
+            res_object.msg = e.getMessage();
+        }
+
+        return res_object;
+    }
+
+
+    public ResObject upload_group_project_contribution_report(String participant_id, String project_id, String project_name, File report,String time,String is_final,String is_preview ){
+        ResObject res_object = new ResObject();
+        String response;
+        //String request  =  "subproject_name="+subproject_name+"&project_id="+project_id;
+        try {
+
+            response = RequestHandler.upload_report(Constants.upload_group_project_contribution_report,true,participant_id,project_id,project_name,report,time,is_final,is_preview);
+            res_object.validity = Constants.VALIDITY_SUCCESS;
+            res_object.msg = response;
+        } catch (Exception e) {
+            res_object.validity = Constants.VALIDITY_FAILED;
+            res_object.msg = e.getMessage();
+        }
+
+        return res_object;
+    }
+
+
+    public ResObject groupproject_subproject_contribution_reports(String subproject_id){
+        ResObject res_object = new ResObject();
+        String response;
+        String request  =  "subproject_id="+subproject_id;
+        try {
+
+            response = RequestHandler.sendPost(request,Constants.groupproject_subproject_contribution_reports,context);
             res_object.validity = Constants.VALIDITY_SUCCESS;
             res_object.msg = response;
         } catch (Exception e) {

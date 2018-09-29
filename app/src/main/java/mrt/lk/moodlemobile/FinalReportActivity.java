@@ -36,6 +36,7 @@ import mrt.lk.moodlemobile.data.ReportLikeItem;
 import mrt.lk.moodlemobile.data.ResObject;
 import mrt.lk.moodlemobile.data.WorkCommentItem;
 import mrt.lk.moodlemobile.utils.Constants;
+import mrt.lk.moodlemobile.utils.DownloadFileFromUrl;
 import mrt.lk.moodlemobile.utils.ProgressBarController;
 import mrt.lk.moodlemobile.utils.Utility;
 import mrt.lk.moodlemobile.utils.WSCalls;
@@ -60,6 +61,7 @@ public class FinalReportActivity extends AppCompatActivity {
     String str_today;
     boolean isOwnlikefound = false;
     boolean givenlike =false;
+    File file;
 
     Context context;
     @Override
@@ -69,7 +71,8 @@ public class FinalReportActivity extends AppCompatActivity {
         context = getApplicationContext();
         prgController = new ProgressBarController(this);
         wsCalls = new WSCalls(getApplicationContext());
-
+        wc= new ArrayList<WorkCommentItem>();
+        lk = new ArrayList<ReportLikeItem>();
         Bundle extras = getIntent().getExtras();
         if(extras == null) {
             PROJECT_ID ="";
@@ -93,7 +96,7 @@ public class FinalReportActivity extends AppCompatActivity {
         btn_download = (Button)findViewById(R.id.btn_download);
         btn_download_preview = (Button)findViewById(R.id.btn_download_preview);
         btn_like = (Button)findViewById(R.id.btn_like);
-        btn_unlike = (Button)findViewById(R.id.btn_download);
+        btn_unlike = (Button)findViewById(R.id.btn_unlike);
         btn_send = (Button)findViewById(R.id.btn_send);
 
         txt_final_upload_by = (TextView) findViewById(R.id.txt_final_upload_by);
@@ -119,6 +122,14 @@ public class FinalReportActivity extends AppCompatActivity {
             img_upload_preview_report.setVisibility(View.GONE);
             img_upload_final_report.setVisibility(View.GONE);
         }
+
+        btn_download.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String u = "https://webmail.mobitel.lk/owa/service.svc/s/GetFileAttachment?id=AAMkAGYwNmEwMTY3LWZhNmUtNDg2YS04NWRmLWNhM2RmMTBmYTM5YgBGAAAAAAB4niVppQ8eRqbeLZR%2BfCWuBwAckZDp4cZCQ71tGAc1FEviAAAAAAEMAAAckZDp4cZCQ71tGAc1FEviAADxRXqNAAABEgAQAKNwQcGP%2FxBMsqkxVglrwG0%3D&X-OWA-CANARY=IjDMUsfaTEu4wmXtQoo0F5KkFisYJtYIsEx8xfk1pzXXO1u7R-aFJjxKsfyGi01sGO0E1HOkhjw.";
+                new DownloadFileFromUrl(prgController,btn_download,FinalReportActivity.this).execute(u);
+            }
+        });
 
         img_upload_preview_report.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -174,7 +185,7 @@ public class FinalReportActivity extends AppCompatActivity {
             }
         });
 
-        layout_final_report.setOnClickListener(new View.OnClickListener() {
+        img_upload_final_report.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 upload_final_report =true;
@@ -193,7 +204,7 @@ public class FinalReportActivity extends AppCompatActivity {
             }
         });
         preview_report_link = final_report_link = "";
-        new CallFinalReports().execute(PROJECT_ID);
+        //new CallFinalReports().execute(PROJECT_ID);
 
     }
 
@@ -240,7 +251,7 @@ public class FinalReportActivity extends AppCompatActivity {
         if (requestCode == 1) {
             if (resultCode == Activity.RESULT_OK) {
                 Uri selectedFileURI = data.getData();
-                File file = new File(selectedFileURI.getPath().toString());
+                 file = new File(selectedFileURI.getPath().toString());
                 Log.d("MoodleMobile", "File : " + file.getName());
                 confirmSendFile(file.getName());
 
@@ -257,7 +268,12 @@ public class FinalReportActivity extends AppCompatActivity {
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
+                        if(upload_final_report){
+                            new UploadReport().execute("0");
+                        }
+                        else{
+                            new UploadReport().execute("1");
+                        }
                     }
                 });
         builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -281,6 +297,7 @@ public class FinalReportActivity extends AppCompatActivity {
                 wc = new ArrayList<WorkCommentItem>();
                 lk = new ArrayList<ReportLikeItem>();
                 if( jfinal != null && jfinal.length() !=0 ){
+                    img_upload_final_report.setVisibility(View.GONE);
                     r_final = new ReportItem();
                     r_final.id = jfinal.getString("report_id");
                     r_final.time = jfinal.getString("time");
@@ -288,7 +305,11 @@ public class FinalReportActivity extends AppCompatActivity {
                     txt_final_upload_by.setText(jfinal.getString("participant_name"));
                     final_report_link = r_final.report_location;
                 }
+                else{
+                    img_upload_final_report.setVisibility(View.VISIBLE);
+                }
                 if(jprevw != null && jprevw.length() !=0){
+                    img_upload_preview_report.setVisibility(View.GONE);
                     r_preview = new ReportItem();
                     r_preview.id = jprevw.getString("report_id");
                     r_preview.time = jprevw.getString("time");
@@ -329,6 +350,9 @@ public class FinalReportActivity extends AppCompatActivity {
                         lk.add(lki);
                     }
 
+                }
+                else{
+                    img_upload_preview_report.setVisibility(View.VISIBLE);
                 }
             }
             else{
@@ -570,6 +594,72 @@ public class FinalReportActivity extends AppCompatActivity {
             else{
                 return new WSCalls(context).add_like_unlike_report(reportid, LoggedUser.id,"subproject",is_like,str_today);
             }
+        }
+    }
+
+    private void populate_upload_report(String msg){
+        try {
+            JSONObject jo = new JSONObject(msg);
+            String rid;
+            ParticipantItem p;
+            if(jo.getString("msg").equals("Success")){
+                rid= jo.getString("data");
+                if(upload_final_report){
+                    r_final = new ReportItem();
+                    r_final.id = rid;
+                    r_final.report_location = "";
+                    p = new ParticipantItem();
+                    p.id = LoggedUser.id;
+                    p.name =LoggedUser.name;
+                    txt_final_upload_by.setText(LoggedUser.username);
+                    img_upload_final_report.setVisibility(View.GONE);
+                    btn_download.setEnabled(false);
+                }
+                else{
+                    r_preview = new ReportItem();
+                    r_preview.id = rid;
+                    txt_report_by.setText(LoggedUser.username);
+                    img_upload_preview_report.setVisibility(View.GONE);
+                    btn_download_preview.setEnabled(false);
+                }
+            }
+            Utility.showMessage(jo.getString("msg"),getApplicationContext());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    class UploadReport extends  AsyncTask<String,Void,ResObject>{
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            prgController.showProgressBar("Sending...");
+        }
+
+        @Override
+        protected void onPostExecute(ResObject response) {
+            super.onPostExecute(response);
+            prgController.hideProgressBar();
+            if(response.validity.equals(Constants.VALIDITY_SUCCESS)){
+                populate_upload_report(response.msg);
+            }
+            else{
+                Utility.showMessage(response.msg,getApplicationContext());
+            }
+        }
+
+        @Override
+        protected ResObject doInBackground(String... params) {
+            SimpleDateFormat df = new SimpleDateFormat(Constants.DATE_FORMAT);
+            String str_today = df.format(Calendar.getInstance().getTime());
+            if(IS_PROJECT){
+                return  wsCalls.upload_group_project_contribution_report(LoggedUser.id,PROJECT_ID,PROJECT_NAME,file,str_today,"1",params[0]);
+            }
+            else{
+                return wsCalls.upload_groupproject_subproject_contribution_report(LoggedUser.id,PROJECT_ID,PROJECT_NAME,file,str_today,"1",params[0]);
+            }
+
         }
     }
 

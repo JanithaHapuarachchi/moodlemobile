@@ -30,7 +30,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:background="@color/white"
-                    android:textColor="@color/app_background_shadow"
+                    android:textColor="@color/colorPrimary"
                     android:layout_centerVertical="true"
                     android:text="Confirm"/>
                 <TextView
@@ -70,7 +70,7 @@
         android:layout_alignParentBottom="true"
         android:layout_margin="16dp"
         android:src="@drawable/ic_add"
-        android:tint="@color/app_background_shadow"
+        android:tint="@color/colorPrimary"
         android:backgroundTint="@color/white"/>
     <include layout="@layout/layout_progress_bar" />
 

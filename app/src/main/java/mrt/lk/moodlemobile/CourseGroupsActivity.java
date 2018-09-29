@@ -93,7 +93,7 @@ public class CourseGroupsActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        new LoadParticipanDetails().execute(LoggedUser.id);
+        //new LoadParticipanDetails().execute(LoggedUser.id);
         setSampleData();
         list_course_groups.setAdapter(new CourseGroupsAdapter(getApplicationContext(),groups, CourseGroupsAdapter.GENERAL_GROUP));
     }

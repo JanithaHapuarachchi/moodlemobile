@@ -49,6 +49,10 @@ public class Constants {
     public static String groupproject_subproject_final_report_details = "groupproject_subproject_final_report_details.php";
     public static String group_project_final_report_details = "group_project_final_report_details.php";
     public static String participant_details = "participant_details.php";
+    public static String group_project_contribution_reports = "group_project_contribution_reports.php";
+    public static String groupproject_subproject_contribution_reports = "groupproject_subproject_contribution_reports.php";
+    public static String upload_group_project_contribution_report = "upload_group_project_contribution_report.php";
+    public static String upload_groupproject_subproject_contribution_report = "upload_groupproject_subproject_contribution_report.php";
 
 
 
