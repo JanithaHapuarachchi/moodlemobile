@@ -2,6 +2,7 @@ package mrt.lk.moodlemobile;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -43,8 +45,12 @@ public class DiaryActivity extends AppCompatActivity {
     WSCalls wsCalls;
     static String SELECTED_PARTICIPANT_ID,SELECTED_PARTICIPANT_NAME,PROJECT_NAME,PROJECT_ID;
     ArrayList<WorkCommentItem> works;
-    WorkCommentItem work;
+    WorkCommentItem sentwork;
     DairyAdapter adapter;
+
+    String str_today;
+    File file;
+    Uri selectedFileURI;
 
     Dialog evaluateStudentDialog;
     String entered_result,entered_comment;
@@ -94,6 +100,32 @@ public class DiaryActivity extends AppCompatActivity {
                 evaluate();
             }
         });
+        btn_send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String msg = txt_message.getText().toString();
+                if(msg.equals("")){
+                    Utility.showMessage("Enter Message",getApplicationContext());
+                }
+                else {
+                    sentwork = new WorkCommentItem();
+                    sentwork.comment = msg;
+                    sentwork.comment_type = ProjectWorksAdapter.TEXT;
+                    SimpleDateFormat df = new SimpleDateFormat(Constants.DATE_FORMAT);
+                    str_today = df.format(Calendar.getInstance().getTime());
+                    sentwork.time =str_today;
+                    sentwork.seen_list = new ArrayList<WorkSeenItem>();
+                    ParticipantItem p = new ParticipantItem();
+                    p.id = LoggedUser.id;
+                    p.name = LoggedUser.name;
+                    sentwork.participant= p;
+
+                    new SendWork().execute("");
+                    txt_message.setText("");
+                }
+            }
+        });
+
     }
     public void evaluate(){
         final Context context =this;
@@ -294,6 +326,48 @@ public class DiaryActivity extends AppCompatActivity {
         @Override
         protected ResObject doInBackground(String... params) {
             return wsCalls.group_project_student_diary(PROJECT_ID,SELECTED_PARTICIPANT_ID);
+        }
+    }
+
+    private void populate_send_work_response(String msg){
+        try {
+            JSONObject jo = new JSONObject(msg);
+            if(jo.getString("msg").equals("Success")){
+                sentwork.comment_id = jo.getString("data");
+                works.add(sentwork);
+                adapter = new DairyAdapter(getApplicationContext(),works, LoggedUser.id);
+                list_works.setAdapter(adapter);
+            }
+            Utility.showMessage(jo.getString("msg"),getApplicationContext());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    class SendWork extends AsyncTask <String,Void,ResObject>{
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            prgController.showProgressBar("Loading...");
+        }
+
+        @Override
+        protected void onPostExecute(ResObject response) {
+            super.onPostExecute(response);
+            prgController.hideProgressBar();
+            if(response.validity.equals(Constants.VALIDITY_SUCCESS)){
+                populate_send_work_response(response.msg);
+            }
+            else{
+                Utility.showMessage(response.msg,getApplicationContext());
+            }
+        }
+
+        @Override
+        protected ResObject doInBackground(String... params) {
+
+                return wsCalls.add_group_project_work(LoggedUser.id,PROJECT_ID,sentwork.comment_type,sentwork.comment,sentwork.time,"1");
+
         }
     }
 }

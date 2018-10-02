@@ -95,6 +95,9 @@ public class CourseGroupsActivity extends AppCompatActivity {
         super.onResume();
         //new LoadParticipanDetails().execute(LoggedUser.id);
         setSampleData();
+        if(owngroup == null){
+            layout_owngroup.setVisibility(View.GONE);
+        }
         list_course_groups.setAdapter(new CourseGroupsAdapter(getApplicationContext(),groups, CourseGroupsAdapter.GENERAL_GROUP));
     }
 

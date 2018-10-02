@@ -24,6 +24,7 @@ public class LoggedUser {
     public static String courseshortname ;
     public static String courseidnumber ;
 
+    public static String selected_group_id = "";
 
     public static final String AS_TEACHER = "teacher";
     public static final String AS_STUDENT = "student";

@@ -14,6 +14,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import mrt.lk.moodlemobile.data.LoggedUser;
 import mrt.lk.moodlemobile.data.ParticipantItem;
 import mrt.lk.moodlemobile.data.ResObject;
 
@@ -242,6 +243,40 @@ public class WSCalls {
         return res_object;
     }
 
+    public ResObject group_project_work_list(String project_id,String participant_id){
+        ResObject res_object = new ResObject();
+        String response;
+        String request  =  "project_id="+project_id+"&participant_id="+participant_id;
+        try {
+
+            response = RequestHandler.sendPost(request,Constants.group_project_work_list,context);
+            res_object.validity = Constants.VALIDITY_SUCCESS;
+            res_object.msg = response;
+        } catch (Exception e) {
+            res_object.validity = Constants.VALIDITY_FAILED;
+            res_object.msg = e.getMessage();
+        }
+
+        return res_object;
+    }
+
+    public ResObject groupproject_subproject_work_list(String subproject_id,String participant_id){
+        ResObject res_object = new ResObject();
+        String response;
+        String request  =  "subproject_id="+subproject_id+"&participant_id="+participant_id;
+        try {
+
+            response = RequestHandler.sendPost(request,Constants.groupproject_subproject_work_list,context);
+            res_object.validity = Constants.VALIDITY_SUCCESS;
+            res_object.msg = response;
+        } catch (Exception e) {
+            res_object.validity = Constants.VALIDITY_FAILED;
+            res_object.msg = e.getMessage();
+        }
+
+        return res_object;
+    }
+
     public ResObject course_group_students(String group_id){
         ResObject res_object = new ResObject();
         String response;
@@ -276,6 +311,87 @@ public class WSCalls {
         return res_object;
     }
 
+
+    public ResObject add_group_project_work(String participant_id, String project_id, String comment_type, String comment, String time, String istodiary){
+        ResObject res_object = new ResObject();
+        String response;
+        String request;
+        if(LoggedUser.roleshortname.equals(LoggedUser.AS_STUDENT)) {
+             request = "participant_id=" + participant_id + "&project_id=" + project_id + "&comment_type=" + comment_type + "&comment=" + comment + "&time=" + time + "&istodiary=" + istodiary + "&group_id=" + LoggedUser.group_id + "&participant_name=" + LoggedUser.name;
+        }
+        else{
+            request = "participant_id=" + participant_id + "&project_id=" + project_id + "&comment_type=" + comment_type + "&comment=" + comment + "&time=" + time + "&istodiary=" + istodiary + "&group_id=" + LoggedUser.selected_group_id + "&participant_name=" + LoggedUser.name;
+        }
+            try {
+
+            response = RequestHandler.sendPost(request,Constants.add_group_project_work,context);
+            res_object.validity = Constants.VALIDITY_SUCCESS;
+            res_object.msg = response;
+        } catch (Exception e) {
+            res_object.validity = Constants.VALIDITY_FAILED;
+            res_object.msg = e.getMessage();
+        }
+
+        return res_object;
+    }
+
+    public ResObject add_groupproject_subproject_work(String participant_id, String subproject_id, String comment_type, String comment, String time, String istodiary){
+        ResObject res_object = new ResObject();
+        String response;
+        String request;
+        if(LoggedUser.roleshortname.equals(LoggedUser.AS_STUDENT)) {
+            request = "participant_id=" + participant_id + "&subproject_id=" + subproject_id + "&comment_type=" + comment_type + "&comment=" + comment + "&time=" + time + "&istodiary=" + istodiary + "&group_id=" + LoggedUser.group_id + "&participant_name=" + LoggedUser.name;
+        }
+        else{
+            request = "participant_id=" + participant_id + "&subproject_id=" + subproject_id + "&comment_type=" + comment_type + "&comment=" + comment + "&time=" + time + "&istodiary=" + istodiary + "&group_id=" + LoggedUser.selected_group_id + "&participant_name=" + LoggedUser.name;
+        }
+        try {
+
+            response = RequestHandler.sendPost(request,Constants.add_groupproject_subproject_work,context);
+            res_object.validity = Constants.VALIDITY_SUCCESS;
+            res_object.msg = response;
+        } catch (Exception e) {
+            res_object.validity = Constants.VALIDITY_FAILED;
+            res_object.msg = e.getMessage();
+        }
+
+        return res_object;
+    }
+
+
+    public ResObject upload_project_work(String participant_id, String project_id, String comment_type, File comment, String time, String istodiary){
+        ResObject res_object = new ResObject();
+        String response;
+        //String request  =  "subproject_name="+subproject_name+"&project_id="+project_id;
+        try {
+
+            response = RequestHandler.upload_project_work(Constants.add_group_project_work,true,participant_id,project_id,comment_type,comment,time,istodiary);
+            res_object.validity = Constants.VALIDITY_SUCCESS;
+            res_object.msg = response;
+        } catch (Exception e) {
+            res_object.validity = Constants.VALIDITY_FAILED;
+            res_object.msg = e.getMessage();
+        }
+
+        return res_object;
+    }
+
+    public ResObject upload_subproject_work(String participant_id, String project_id, String comment_type, File comment, String time, String istodiary){
+        ResObject res_object = new ResObject();
+        String response;
+        //String request  =  "subproject_name="+subproject_name+"&project_id="+project_id;
+        try {
+
+            response = RequestHandler.upload_project_work(Constants.add_groupproject_subproject_work,false,participant_id,project_id,comment_type,comment,time,istodiary);
+            res_object.validity = Constants.VALIDITY_SUCCESS;
+            res_object.msg = response;
+        } catch (Exception e) {
+            res_object.validity = Constants.VALIDITY_FAILED;
+            res_object.msg = e.getMessage();
+        }
+
+        return res_object;
+    }
 
 
 
@@ -418,6 +534,26 @@ public class WSCalls {
 
         return res_object;
     }
+
+
+
+    public ResObject add_gcm_participant(String participant_id,String gcm_token){
+        ResObject res_object = new ResObject();
+        String response;
+        String request  =  "participant_id="+participant_id+"&gcm_token="+gcm_token;
+        try {
+
+            response = RequestHandler.sendPost(request,Constants.add_gcm_participant,context);
+            res_object.validity = Constants.VALIDITY_SUCCESS;
+            res_object.msg = response;
+        } catch (Exception e) {
+            res_object.validity = Constants.VALIDITY_FAILED;
+            res_object.msg = e.getMessage();
+        }
+
+        return res_object;
+    }
+
 
     public ResObject add_group_project(String group_id,String project_name){
         ResObject res_object = new ResObject();

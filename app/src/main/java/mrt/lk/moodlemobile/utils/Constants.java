@@ -18,6 +18,8 @@ public class Constants {
     public static final String USER_ID ="USER_ID";
     public static final String STAFF_ID ="STAFF_ID";
     public static final String SHOULD_SYNC_AGAIN = "SHOULD_SYNC_AGAIN";
+    public static final String PROJECT_LAST_COMMENT = "PROJECT_LAST_COMMENT";
+    public static final String SUBPROJECT_LAST_COMMENT = "SUBPROJECT_LAST_COMMENT";
 
     public static String SERVER_URL_DEFAULT = "https://13.251.49.181";
     public static String SERVER_PORT_DEFAULT = "443";
@@ -53,6 +55,12 @@ public class Constants {
     public static String groupproject_subproject_contribution_reports = "groupproject_subproject_contribution_reports.php";
     public static String upload_group_project_contribution_report = "upload_group_project_contribution_report.php";
     public static String upload_groupproject_subproject_contribution_report = "upload_groupproject_subproject_contribution_report.php";
+    public static String add_group_project_work = "add_group_project_work.php";
+    public static String add_groupproject_subproject_work = "add_groupproject_subproject_work.php";
+    public static String group_project_work_list = "group_project_work_list.php";
+    public static String groupproject_subproject_work_list = "groupproject_subproject_work_list.php";
+    public static String add_gcm_participant = "add_gcm_participant.php";
+
 
 
 

@@ -17,6 +17,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import mrt.lk.moodlemobile.adapters.GroupStudentInfoAdapter;
+import mrt.lk.moodlemobile.data.LoggedUser;
 import mrt.lk.moodlemobile.data.ParticipantItem;
 import mrt.lk.moodlemobile.data.ResObject;
 import mrt.lk.moodlemobile.utils.Constants;
@@ -82,6 +83,13 @@ public class GroupDetailsActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
+
+        if(LoggedUser.status.equals(LoggedUser.AS_EVALUATE)){
+            btn_confirm.setVisibility(View.VISIBLE);
+        }
+        else{
+            btn_confirm.setVisibility(View.GONE);
+        }
     }
 
     private void setSampleData(){

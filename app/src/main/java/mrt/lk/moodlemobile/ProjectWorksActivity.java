@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,37 +16,71 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import java.io.File;
-import java.util.ArrayList;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+
+import mrt.lk.moodlemobile.adapters.DairyAdapter;
 import mrt.lk.moodlemobile.adapters.ProjectWorksAdapter;
 import mrt.lk.moodlemobile.data.CourseGroupItem;
 import mrt.lk.moodlemobile.data.LoggedUser;
 import mrt.lk.moodlemobile.data.ParticipantItem;
+import mrt.lk.moodlemobile.data.ResObject;
 import mrt.lk.moodlemobile.data.WorkCommentItem;
 import mrt.lk.moodlemobile.data.WorkSeenItem;
+import mrt.lk.moodlemobile.utils.Constants;
 import mrt.lk.moodlemobile.utils.ProgressBarController;
+import mrt.lk.moodlemobile.utils.Utility;
+import mrt.lk.moodlemobile.utils.WSCalls;
 
 public class ProjectWorksActivity extends AppCompatActivity {
 
     Button btn_attach,btn_send;
     EditText txt_message;
     ListView list_works;
-    ProgressBarController prgController;
-    static String SELECTED_GROUP_ID,SELECTED_GROUP_NAME,PROJECT_NAME,PROJECT_ID;
-    boolean IS_PROJECT;
-    ArrayList<WorkCommentItem> works;
-    WorkCommentItem work;
-    ProjectWorksAdapter adapter;
+    public static ProgressBarController prgController;
+     static String SELECTED_GROUP_ID,SELECTED_GROUP_NAME,PROJECT_NAME,PROJECT_ID;
+    public static boolean IS_PROJECT;
+    public static boolean isActivityStarted = false;
+    public static ArrayList<WorkCommentItem> works;
+    WorkCommentItem sentwork;
+    public static ProjectWorksAdapter adapter;
     LinearLayout layout_send;
+    WSCalls wsCalls;
+    String str_today;
+    File file;
+    Uri selectedFileURI;
+
+
+
+    int start_comment_id;
+    int last_comment_id;
 
     private static final int REQUEST_DOCUMENTS = 1;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        isActivityStarted = true;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        isActivityStarted = false;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_project_works);
         prgController = new ProgressBarController(this);
+        wsCalls =new WSCalls(getApplicationContext());
         btn_attach = (Button)findViewById(R.id.btn_attach);
         btn_send = (Button)findViewById(R.id.btn_send);
         txt_message = (EditText)findViewById(R.id.txt_message);
@@ -65,6 +100,7 @@ public class ProjectWorksActivity extends AppCompatActivity {
             PROJECT_NAME = extras.getString("PROJECT_NAME");
             IS_PROJECT = extras.getBoolean("IS_PROJECT",false);
         }
+        LoggedUser.selected_group_id = SELECTED_GROUP_ID;
         if(IS_PROJECT) {
             getSupportActionBar().setTitle("Project works for " + PROJECT_NAME);
         }
@@ -95,6 +131,33 @@ public class ProjectWorksActivity extends AppCompatActivity {
                 }
             }
         });
+
+        btn_send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String msg = txt_message.getText().toString();
+                if(msg.equals("")){
+                    Utility.showMessage("Enter Message",getApplicationContext());
+                }
+                else {
+                    sentwork = new WorkCommentItem();
+                    sentwork.comment = msg;
+                    sentwork.comment_type = ProjectWorksAdapter.TEXT;
+                    SimpleDateFormat df = new SimpleDateFormat(Constants.DATE_FORMAT);
+                    str_today = df.format(Calendar.getInstance().getTime());
+                    sentwork.time =str_today;
+                    sentwork.seen_list = new ArrayList<WorkSeenItem>();
+                    ParticipantItem p = new ParticipantItem();
+                    p.id = LoggedUser.id;
+                    p.name = LoggedUser.name;
+                    sentwork.participant= p;
+
+                    new SendWork().execute("");
+                    txt_message.setText("");
+                }
+            }
+        });
+        //new CallWorkList().execute("");
         setSampleData();
         adapter = new ProjectWorksAdapter(getApplicationContext(),works, LoggedUser.id);
         list_works.setAdapter(adapter);
@@ -106,8 +169,8 @@ public class ProjectWorksActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
             if (resultCode == Activity.RESULT_OK) {
-                Uri selectedFileURI = data.getData();
-                File file = new File(selectedFileURI.getPath().toString());
+                 selectedFileURI = data.getData();
+                 file = new File(selectedFileURI.getPath().toString());
                 Log.d("MoodleMobile", "File : " + file.getName());
                 confirmSendFile(file.getName());
 //                uploadedFileName = file.getName().toString();
@@ -128,7 +191,20 @@ public class ProjectWorksActivity extends AppCompatActivity {
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
+                        sentwork = new WorkCommentItem();
+                        sentwork.comment = "";
+                        String filenameArray[] = file.getName().split("\\.");
+                        String extension = filenameArray[filenameArray.length-1];
+                        sentwork.comment_type = extension;
+                        SimpleDateFormat df = new SimpleDateFormat(Constants.DATE_FORMAT);
+                        str_today = df.format(Calendar.getInstance().getTime());
+                        sentwork.time =str_today;
+                        sentwork.seen_list = new ArrayList<WorkSeenItem>();
+                        ParticipantItem p = new ParticipantItem();
+                        p.id = LoggedUser.id;
+                        p.name = LoggedUser.name;
+                        sentwork.participant= p;
+                        new UploadWork().execute("");
                     }
                 });
         builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -167,6 +243,177 @@ public class ProjectWorksActivity extends AppCompatActivity {
             work.participant =p;
             work.seen_list = new ArrayList<WorkSeenItem>();
             works.add(work);
+        }
+    }
+
+    private void populate_send_work_response(String msg){
+        try {
+            JSONObject jo = new JSONObject(msg);
+            if(jo.getString("msg").equals("Success")){
+                sentwork.comment_id = jo.getString("data");
+                works.add(sentwork);
+                adapter = new ProjectWorksAdapter(getApplicationContext(),works, LoggedUser.id);
+                list_works.setAdapter(adapter);
+            }
+            Utility.showMessage(jo.getString("msg"),getApplicationContext());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    class UploadWork extends AsyncTask <String,Void,ResObject>{
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            prgController.showProgressBar("Uploading...");
+        }
+
+        @Override
+        protected void onPostExecute(ResObject response) {
+            super.onPostExecute(response);
+            prgController.hideProgressBar();
+            if(response.validity.equals(Constants.VALIDITY_SUCCESS)){
+                populate_send_work_response(response.msg);
+            }
+            else{
+                Utility.showMessage(response.msg,getApplicationContext());
+            }
+        }
+
+        @Override
+        protected ResObject doInBackground(String... params) {
+            if(IS_PROJECT){
+                return wsCalls.upload_project_work(LoggedUser.id,PROJECT_ID,sentwork.comment_type,file,sentwork.time,"0");
+            }
+            else{
+                return wsCalls.upload_subproject_work(LoggedUser.id,PROJECT_ID,sentwork.comment_type,file,sentwork.time,"0");
+            }
+        }
+    }
+
+
+    class SendWork extends AsyncTask <String,Void,ResObject>{
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            prgController.showProgressBar("Loading...");
+        }
+
+        @Override
+        protected void onPostExecute(ResObject response) {
+            super.onPostExecute(response);
+            prgController.hideProgressBar();
+            if(response.validity.equals(Constants.VALIDITY_SUCCESS)){
+                populate_send_work_response(response.msg);
+            }
+            else{
+                Utility.showMessage(response.msg,getApplicationContext());
+            }
+        }
+
+        @Override
+        protected ResObject doInBackground(String... params) {
+            if(IS_PROJECT){
+                return wsCalls.add_group_project_work(LoggedUser.id,PROJECT_ID,sentwork.comment_type,sentwork.comment,sentwork.time,"0");
+            }
+            else{
+                return wsCalls.add_groupproject_subproject_work(LoggedUser.id,PROJECT_ID,sentwork.comment_type,sentwork.comment,sentwork.time,"0");
+            }
+        }
+    }
+
+    private void populate_worklist(String msg){
+        JSONObject jo = null;
+        try {
+            jo = new JSONObject(msg);
+            JSONArray ja,jseens;
+            JSONObject jwork,jseen;
+            WorkCommentItem work;
+            ParticipantItem p,ps;
+            WorkSeenItem wsi;
+            ArrayList<WorkSeenItem>ws;
+            works = new ArrayList<WorkCommentItem>();
+            if(jo.getString("msg").equals("Success")){
+                ja = jo.getJSONArray("data");
+
+                for(int i=0;i< ja.length();i++){
+                    jwork = ja.getJSONObject(i);
+                    work = new WorkCommentItem();
+                    work.time = jwork.getString("time");
+                    work.comment_id = jwork.getString("comment_id");
+                    work.project_name = jwork.getString("project_name");
+                    p = new ParticipantItem();
+                    p.id = jwork.getString("participant_id");
+                    p.name = jwork.getString("participant_name");
+                    work.participant =p;
+                    work.comment_type = jwork.getString("comment_type");
+                    work.comment = jwork.getString("comment");
+                    work.comment_location = jwork.getString("comment");
+                    work.comment_id = jwork.getString("comment_id");
+                    work.isDiary = jwork.getBoolean("is_diary");
+                    ws = new ArrayList<WorkSeenItem>();
+
+                    if(i==ja.length()-1){
+                        last_comment_id = Integer.parseInt(work.comment_id);
+                    }
+
+                    jseens = jwork.getJSONArray("seen_list");
+                    for(int j=0;j<jseens.length();j++){
+                        jseen = jseens.getJSONObject(j);
+                        wsi = new WorkSeenItem();
+                        wsi.time =jseen.getString("time");
+                        ps = new ParticipantItem();
+                        ps.name = jseen.getString("participant_name");
+                        ps.id = jseen.getString("participant_id");
+                        wsi.name =  jseen.getString("participant_name");
+                        wsi.id = jseen.getString("participant_id");
+                        ws.add(wsi);
+                    }
+                    work.seen_list = ws;
+                    works.add(work);
+                }
+            }
+            else{
+                Utility.showMessage(jo.getString("msg"),getApplicationContext());
+            }
+            adapter = new ProjectWorksAdapter(getApplicationContext(),works,LoggedUser.id);
+            list_works.setAdapter(adapter);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    class CallWorkList extends AsyncTask<String,Void,ResObject>{
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            prgController.showProgressBar("Loading...");
+        }
+
+        @Override
+        protected void onPostExecute(ResObject response) {
+            super.onPostExecute(response);
+            prgController.hideProgressBar();
+            if(response.validity.equals(Constants.VALIDITY_SUCCESS)){
+                populate_worklist(response.msg);
+            }
+            else{
+                Utility.showMessage(response.msg,getApplicationContext());
+            }
+        }
+
+        @Override
+        protected ResObject doInBackground(String... params) {
+            if(IS_PROJECT){
+                return wsCalls.group_project_work_list(PROJECT_ID,LoggedUser.id);
+            }
+            else{
+                return wsCalls.groupproject_subproject_work_list(PROJECT_ID,LoggedUser.id);
+            }
+            //return null;
         }
     }
 }

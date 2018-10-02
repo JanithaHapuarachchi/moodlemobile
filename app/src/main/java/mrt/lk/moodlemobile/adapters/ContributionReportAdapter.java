@@ -21,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import mrt.lk.moodlemobile.FinalReportActivity;
 import mrt.lk.moodlemobile.ProjectReportActivity;
 import mrt.lk.moodlemobile.R;
 import mrt.lk.moodlemobile.data.LoggedUser;
@@ -30,6 +31,7 @@ import mrt.lk.moodlemobile.data.ReportLikeItem;
 import mrt.lk.moodlemobile.data.ResObject;
 import mrt.lk.moodlemobile.data.WorkCommentItem;
 import mrt.lk.moodlemobile.utils.Constants;
+import mrt.lk.moodlemobile.utils.DownloadFileFromUrl;
 import mrt.lk.moodlemobile.utils.Utility;
 import mrt.lk.moodlemobile.utils.WSCalls;
 
@@ -83,6 +85,8 @@ public class ContributionReportAdapter extends ArrayAdapter {
         btn_unlike = (Button) v.getTag(R.id.btn_unlike);
         btn_like = (Button) v.getTag(R.id.btn_like);
         btn_send = (Button) v.getTag(R.id.btn_send);
+
+
 
         boolean isOwnlikefound = false;
         boolean givenlike = false;
@@ -187,6 +191,15 @@ public class ContributionReportAdapter extends ArrayAdapter {
                 }
             }
         });
+
+        btn_download.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ReportItem i = reports.get(position);
+                new DownloadFileFromUrl(ProjectReportActivity.prgController,btn_download,context).execute(i.report_location);
+            }
+        });
+
         return v;
     }
 

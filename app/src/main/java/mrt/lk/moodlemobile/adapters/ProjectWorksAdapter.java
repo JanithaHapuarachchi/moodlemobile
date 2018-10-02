@@ -15,11 +15,14 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import mrt.lk.moodlemobile.ProjectReportActivity;
+import mrt.lk.moodlemobile.ProjectWorksActivity;
 import mrt.lk.moodlemobile.R;
 import mrt.lk.moodlemobile.data.GroupSubProjectItem;
 import mrt.lk.moodlemobile.data.ParticipantItem;
 import mrt.lk.moodlemobile.data.WorkCommentItem;
 import mrt.lk.moodlemobile.data.WorkSeenItem;
+import mrt.lk.moodlemobile.utils.DownloadFileFromUrl;
 
 /**
  * Created by janithah on 9/24/2018.
@@ -44,11 +47,11 @@ public class ProjectWorksAdapter extends ArrayAdapter {
         this.pid =pid;
     }
 
-    public View getView(int position, View view,ViewGroup viewGroup) {
+    public View getView(final int position, View view,ViewGroup viewGroup) {
         View v = view;
         TextView txt_time,txt_comment_by,txt_comment,txt_seen;
         LinearLayout layout_work;
-        Button btn_download;
+        final Button btn_download;
         if (v == null) {
             v = mInflater.inflate(R.layout.layout_project_work, viewGroup, false);
             v.setTag(R.id.txt_time, v.findViewById(R.id.txt_time));
@@ -107,7 +110,8 @@ public class ProjectWorksAdapter extends ArrayAdapter {
         btn_download.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                WorkCommentItem item = works.get(position);
+                new DownloadFileFromUrl(ProjectWorksActivity.prgController,btn_download,context).execute(item.comment_location);
             }
         });
 

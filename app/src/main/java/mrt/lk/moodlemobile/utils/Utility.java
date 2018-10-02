@@ -149,6 +149,9 @@ public class Utility {
         return preferences.getString(Constants.USER_PASSWORD, "");
     }
 
+
+
+
     public static boolean isJSONKeyAvailable(JSONObject jObject,String key){
         if(jObject.has(key)){
             return true;
@@ -239,5 +242,29 @@ public class Utility {
 //        dialog.setCancelable(false);
 //        return dialog;
 //    }
+public static boolean setProjectLastCommentID(Context context,int id){
+    SharedPreferences preferences =  getSharedPrefs(context);
+    SharedPreferences.Editor editor = preferences.edit();
+    editor.putInt(Constants.PROJECT_LAST_COMMENT,id);
+    editor.commit();
+    return true;
+}
 
+    public static boolean setSubProjectLastCommentID(Context context,int id){
+        SharedPreferences preferences =  getSharedPrefs(context);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt(Constants.SUBPROJECT_LAST_COMMENT,id);
+        editor.commit();
+        return true;
+    }
+
+    public static int getProjectLastCommentID(Context context){
+        SharedPreferences preferences =  getSharedPrefs(context);
+        return preferences.getInt(Constants.PROJECT_LAST_COMMENT, 1);
+    }
+
+    public static int getSubProjectLastCommentID(Context context){
+        SharedPreferences preferences =  getSharedPrefs(context);
+        return preferences.getInt(Constants.SUBPROJECT_LAST_COMMENT, 1);
+    }
 }

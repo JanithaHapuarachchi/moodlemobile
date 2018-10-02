@@ -89,7 +89,7 @@ public class DownloadFileFromUrl extends AsyncTask <String,Void,String> {
            // Utility.showMessage("Downloaded",context);
 
         } catch (Exception e) {
-            Log.e("Error: ", e.getMessage());
+//            Log.e("Error: ", e.getMessage());
             return e.getMessage();
         }
 

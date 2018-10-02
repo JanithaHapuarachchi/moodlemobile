@@ -131,6 +131,13 @@ public class FinalReportActivity extends AppCompatActivity {
             }
         });
 
+        btn_download_preview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new DownloadFileFromUrl(prgController,btn_download_preview,FinalReportActivity.this).execute(preview_report_link);
+            }
+        });
+
         img_upload_preview_report.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
