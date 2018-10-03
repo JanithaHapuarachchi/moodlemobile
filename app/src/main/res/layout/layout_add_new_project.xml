@@ -17,7 +17,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/app_background">
+                android:background="@color/app_text_color_warning">
                 <ImageView
                     android:id="@+id/closeimg"
                     android:layout_width="30dp"
@@ -42,8 +42,8 @@
                     android:layout_width="wrap_content"
                     android:text="Add New Project"
                     android:id="@+id/add_new_project_title"
-                    android:background="@color/app_background"
-                    android:textColor="@color/white"
+                    android:background="@color/app_text_color_warning"
+                    android:textColor="#000"
                     />
             </RelativeLayout>
         </LinearLayout>
@@ -79,7 +79,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@android:color/transparent"
-                        android:textColor="@color/app_background_shadow"
+                        android:textColor="@color/warning_red"
                         android:textStyle="bold"
                         android:text="Add" />
 
@@ -88,7 +88,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@android:color/transparent"
-                        android:textColor="@color/app_background"
+                        android:textColor="@color/colorPrimary"
                         android:textStyle="bold"
                         android:text="Close" />
 

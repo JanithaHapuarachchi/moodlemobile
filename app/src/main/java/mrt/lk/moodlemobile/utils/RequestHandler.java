@@ -39,7 +39,7 @@ public class RequestHandler {
         sc = SSLContext.getInstance("TLS");
         sc.init(null, new X509TrustManager[]{new NullX509TrustManager()}, new SecureRandom());
         String responseString ="";
-        Constants.MAIN_URL = Utility.getServerURL(context)+":"+Utility.getServerPORT(context)+"/fineract-provider/api/v1/";
+        //Constants.MAIN_URL = Utility.getServerURL(context)+":"+Utility.getServerPORT(context)+"/fineract-provider/api/v1/";
         String completeurl = Constants.MAIN_URL+methodname;
         Log.e("URL GET",completeurl);
         URL obj = new URL(completeurl);
@@ -47,10 +47,7 @@ public class RequestHandler {
         con.setSSLSocketFactory(sc.getSocketFactory());
         con.setHostnameVerifier(new NullHostNameVerifier());
         con.setRequestMethod("GET");
-        con.setRequestProperty("Fineract-Platform-TenantId",Utility.getServerTenant(context));
-        if(!Utility.getAuthKey(context).equals("")){
-            con.setRequestProperty ("Authorization", "Basic " + Utility.getAuthKey(context));
-        }
+
         int responseCode = con.getResponseCode();
         Log.e("Code",Integer.toString(responseCode));
         /*if (responseCode == HttpURLConnection.HTTP_OK) {*/
@@ -122,7 +119,7 @@ public class RequestHandler {
         SSLContext sc;
         sc = SSLContext.getInstance("TLS");
         String responseString ="";
-        Constants.MAIN_URL = Utility.getServerURL(context)+":"+Utility.getServerPORT(context)+"/fineract-provider/api/v1/";
+       // Constants.MAIN_URL = Utility.getServerURL(context)+":"+Utility.getServerPORT(context)+"/fineract-provider/api/v1/";
         String completeurl;
         completeurl = Constants.MAIN_URL+methodname;
 //        if(methodname.equals(Constants.AUTHENTICATION_URL)){
@@ -399,7 +396,7 @@ public class RequestHandler {
         SSLContext sc;
         sc = SSLContext.getInstance("TLS");
         String responseString ="";
-        Constants.MAIN_URL = Utility.getServerURL(context)+":"+Utility.getServerPORT(context)+"/fineract-provider/api/v1/";
+        //Constants.MAIN_URL = Utility.getServerURL(context)+":"+Utility.getServerPORT(context)+"/fineract-provider/api/v1/";
         String completeurl = Constants.MAIN_URL+methodname;
         Log.e("URL POST",completeurl);
         URL obj = new URL(completeurl);
@@ -412,10 +409,10 @@ public class RequestHandler {
         con.setRequestMethod("POST");
 
         con.setRequestProperty("Content-Type","application/json");
-        con.setRequestProperty("Fineract-Platform-TenantId",Utility.getServerTenant(context));
-        if(!Utility.getAuthKey(context).equals("")){
-            con.setRequestProperty  ("Authorization", "Basic " + Utility.getAuthKey(context));
-        }
+//        con.setRequestProperty("Fineract-Platform-TenantId",Utility.getServerTenant(context));
+//        if(!Utility.getAuthKey(context).equals("")){
+//            con.setRequestProperty  ("Authorization", "Basic " + Utility.getAuthKey(context));
+//        }
         con.connect();
 
         DataOutputStream printout = new DataOutputStream(con.getOutputStream ());
@@ -462,15 +459,15 @@ public class RequestHandler {
         context.init(null, new X509TrustManager[]{new NullX509TrustManager()}, new SecureRandom());
 //https://52.74.229.37:443/fineract-provider/api/v1/
 // Tell the URLConnection to use a SocketFactory from our SSLContext
-        Constants.MAIN_URL = Utility.getServerURL(cont)+":"+Utility.getServerPORT(cont)+"/fineract-provider/api/v1/";
+       // Constants.MAIN_URL = Utility.getServerURL(cont)+":"+Utility.getServerPORT(cont)+"/fineract-provider/api/v1/";
         URL url = new URL(Constants.MAIN_URL+"clients");
         HttpsURLConnection urlConnection =
                 (HttpsURLConnection)url.openConnection();
         urlConnection.setSSLSocketFactory(context.getSocketFactory());
         urlConnection.setHostnameVerifier(new NullHostNameVerifier());
         urlConnection.setRequestMethod("GET");
-        urlConnection.setRequestProperty("Fineract-Platform-TenantId",Utility.getServerTenant(cont));
-        urlConnection.setRequestProperty  ("Authorization", "Basic " + "amFuaXRoYTphYmNAMTIzNA==");
+       // urlConnection.setRequestProperty("Fineract-Platform-TenantId",Utility.getServerTenant(cont));
+       // urlConnection.setRequestProperty  ("Authorization", "Basic " + "amFuaXRoYTphYmNAMTIzNA==");
        // InputStream in = urlConnection.getInputStream();
         BufferedReader in = new BufferedReader(new InputStreamReader(
                 urlConnection.getInputStream()));

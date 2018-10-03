@@ -57,6 +57,9 @@
     </LinearLayout>
 
     <ListView
+        android:layout_margin="2dp"
+        android:divider="@color/app_background"
+        android:dividerHeight="2dp"
         android:id="@+id/list_works"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

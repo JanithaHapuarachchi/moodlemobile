@@ -98,7 +98,7 @@ public class LoginActivity extends AppCompatActivity {
         prgController = new ProgressBarController(this);
         ws = new WSCalls(getApplicationContext());
         //SFirebaseInstanceId.getInstance().toString()
-        register_gcm();
+
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -142,6 +142,12 @@ public class LoginActivity extends AppCompatActivity {
             new WSCalls(getApplicationContext()).add_gcm_participant(LoggedUser.id,params[0]);
             return null;
         }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            Log.e("Moodle","Registered");
+        }
     }
 
     public void checkLogin(String uname,String pswrd) {
@@ -161,6 +167,7 @@ public class LoginActivity extends AppCompatActivity {
             }
             else{
                 LoggedUser.id = txt_username.getText().toString();
+                register_gcm();
                 gotoMenu();
             }
         } catch (JSONException e) {

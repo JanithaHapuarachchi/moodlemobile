@@ -2,10 +2,13 @@ package mrt.lk.moodlemobile;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -42,9 +45,9 @@ public class ProjectWorksActivity extends AppCompatActivity {
 
     Button btn_attach,btn_send;
     EditText txt_message;
-    ListView list_works;
+    public static ListView list_works;
     public static ProgressBarController prgController;
-     static String SELECTED_GROUP_ID,SELECTED_GROUP_NAME,PROJECT_NAME,PROJECT_ID;
+    public static String SELECTED_GROUP_ID,SELECTED_GROUP_NAME,PROJECT_NAME,PROJECT_ID;
     public static boolean IS_PROJECT;
     public static boolean isActivityStarted = false;
     public static ArrayList<WorkCommentItem> works;
@@ -56,7 +59,7 @@ public class ProjectWorksActivity extends AppCompatActivity {
     File file;
     Uri selectedFileURI;
 
-
+    private static Context cnt;
 
     int start_comment_id;
     int last_comment_id;
@@ -67,17 +70,20 @@ public class ProjectWorksActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         isActivityStarted = true;
+        Log.e("Moodle","Activity Started");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         isActivityStarted = false;
+        Log.e("Moodle","Activity Stoped");
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+       cnt =  ProjectWorksActivity.this;
         setContentView(R.layout.activity_project_works);
         prgController = new ProgressBarController(this);
         wsCalls =new WSCalls(getApplicationContext());
@@ -100,6 +106,7 @@ public class ProjectWorksActivity extends AppCompatActivity {
             PROJECT_NAME = extras.getString("PROJECT_NAME");
             IS_PROJECT = extras.getBoolean("IS_PROJECT",false);
         }
+        Log.e("Moodle PROJECT ID",PROJECT_ID);
         LoggedUser.selected_group_id = SELECTED_GROUP_ID;
         if(IS_PROJECT) {
             getSupportActionBar().setTitle("Project works for " + PROJECT_NAME);
@@ -415,5 +422,34 @@ public class ProjectWorksActivity extends AppCompatActivity {
             }
             //return null;
         }
+    }
+    public static void populate_data_from_msg(WorkCommentItem item){
+       // x(item);
+    }
+    public void x(final WorkCommentItem item){
+        runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+                works.add(item);
+                adapter = new ProjectWorksAdapter(cnt,ProjectWorksActivity.works, LoggedUser.id);
+                list_works.setAdapter(adapter);
+                // Stuff that updates the UI
+
+            }
+        });
+
+
+
+    }
+
+    public static Handler UIHandler;
+
+    static
+    {
+        UIHandler = new Handler(Looper.getMainLooper());
+    }
+    public static void runOnUI(Runnable runnable) {
+        UIHandler.post(runnable);
     }
 }
