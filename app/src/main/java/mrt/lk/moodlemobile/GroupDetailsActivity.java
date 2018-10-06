@@ -106,10 +106,16 @@ public class GroupDetailsActivity extends AppCompatActivity {
     }
 
     private void populate_confirm(String msg){
-        if(msg.equals("Success")){
-            btn_confirm.setEnabled(false);
+        try {
+            JSONObject jo  = new JSONObject(msg);
+            if(jo.getString("msg").equals("Success")){
+                btn_confirm.setEnabled(false);
+            }
+            Utility.showMessage(jo.getString("msg"),getApplicationContext());
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-        Utility.showMessage(msg,getApplicationContext());
+
     }
 
     public static void showPrg(String msg){

@@ -94,4 +94,17 @@ public class Constants {
 
     public static final String NETWORK_NOT_FOUND = "Network Not Found";
 
+    public static final String[] ALLOWED_VIDEO_FORMATS =  new String[]{"mp4"};
+    public static final String[] ALLOWED_AUDIO_FORMATS =  new String[]{"mp3"};
+    public static final String[] ALLOWED_IMAGE_FORMATS =  new String[]{"jpeg","png"};
+    public static final String[] ALLOWED_FILE_FORMATS =  new String[]{"doc","pdf","txt","xlsx"};
+
+    public static final String UPLOAD_TEXT = "text";
+    public static final String UPLOAD_LINK = "link";
+    public static final String UPLOAD_VIDEO = "video";
+    public static final String UPLOAD_IMAGE = "image";
+    public static final String UPLOAD_AUDIO = "audio";
+    public static final String UPLOAD_FILE = "file";
+
+
 }

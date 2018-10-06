@@ -26,6 +26,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 
 import mrt.lk.moodlemobile.adapters.DairyAdapter;
@@ -202,7 +203,19 @@ public class ProjectWorksActivity extends AppCompatActivity {
                         sentwork.comment = "";
                         String filenameArray[] = file.getName().split("\\.");
                         String extension = filenameArray[filenameArray.length-1];
-                        sentwork.comment_type = extension;
+                        if(Arrays.asList(Constants.ALLOWED_VIDEO_FORMATS).contains(extension)){
+                            sentwork.comment_type = Constants.UPLOAD_VIDEO;
+                        }
+                        else if(Arrays.asList(Constants.ALLOWED_AUDIO_FORMATS).contains(extension)){
+                            sentwork.comment_type = Constants.UPLOAD_AUDIO;
+                        }
+                        else if(Arrays.asList(Constants.ALLOWED_IMAGE_FORMATS).contains(extension)){
+                            sentwork.comment_type = Constants.UPLOAD_IMAGE;
+                        }
+                        else{
+                            sentwork.comment_type = Constants.UPLOAD_FILE;
+                        }
+
                         SimpleDateFormat df = new SimpleDateFormat(Constants.DATE_FORMAT);
                         str_today = df.format(Calendar.getInstance().getTime());
                         sentwork.time =str_today;

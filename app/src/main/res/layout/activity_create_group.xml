@@ -30,7 +30,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:background="@color/white"
-                    android:textColor="@color/app_background_shadow"
+                    android:textColor="@color/colorPrimary"
                     android:layout_centerVertical="true"
                     android:text="Done"/>
                 <EditText

@@ -87,8 +87,8 @@ public class CreateGroupActivity extends AppCompatActivity {
                     Utility.showMessage("Please add a Name",CreateGroupActivity.this);
                 }
                 else {
-                    rearrange_original_participants();
-                    //new AddGroupStudets().execute(group_name.getText().toString());
+                 //   rearrange_original_participants();
+                    new AddGroupStudets().execute(group_name.getText().toString());
                 }
 
             }
@@ -120,10 +120,10 @@ public class CreateGroupActivity extends AppCompatActivity {
                 participants.set(position,item);
             }
         });
-        setSampleData();
-       // new LoadUnAllocatedAtudents().execute(LoggedUser.course_id);
-        addStudentsAdapter = new GroupAddStudentsAdapter(getApplicationContext(),participants);
-        list_students.setAdapter(addStudentsAdapter);
+        //setSampleData();
+        new LoadUnAllocatedAtudents().execute(LoggedUser.course_id);
+      //  addStudentsAdapter = new GroupAddStudentsAdapter(getApplicationContext(),participants);
+        //list_students.setAdapter(addStudentsAdapter);
 
         search_name.addTextChangedListener(new TextWatcher() {
             @Override
@@ -211,7 +211,13 @@ public class CreateGroupActivity extends AppCompatActivity {
             if(j.getString("msg").equals("Success")) {
 
                 //JSONArray j_array = new JSONArray(msg);
-                JSONArray j_array = j.getJSONArray("data");
+                JSONArray j_array;
+                if(j.isNull("data")){
+                    j_array = new JSONArray();
+                }
+                else {
+                    j_array = j.getJSONArray("data");
+                }
                 participants = new ArrayList<ParticipantItem>();
                 ParticipantItem p;
                 JSONObject jo;
@@ -219,7 +225,7 @@ public class CreateGroupActivity extends AppCompatActivity {
                     jo = j_array.getJSONObject(i);
                     p = new ParticipantItem();
                     p.id = jo.getString("participantid");
-                    p.name = jo.getString("studentname");
+                    p.name = jo.getString("firstname");
                     participants.add(p);
                 }
                 original_participants = participants;
@@ -231,6 +237,7 @@ public class CreateGroupActivity extends AppCompatActivity {
             }
         } catch (JSONException e) {
             e.printStackTrace();
+            Log.e("Moodle Error",e.getMessage());
         }
     }
 

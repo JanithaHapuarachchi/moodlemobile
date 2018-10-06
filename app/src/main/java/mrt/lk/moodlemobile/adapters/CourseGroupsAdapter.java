@@ -19,6 +19,7 @@ import mrt.lk.moodlemobile.GroupDetailsActivity;
 import mrt.lk.moodlemobile.R;
 import mrt.lk.moodlemobile.data.CourseGroupItem;
 import mrt.lk.moodlemobile.data.LoggedUser;
+import mrt.lk.moodlemobile.utils.Utility;
 
 /**
  * Created by janithah on 9/21/2018.
@@ -62,24 +63,35 @@ public class CourseGroupsAdapter extends ArrayAdapter {
             @Override
             public void onClick(View v) {
                 CourseGroupItem item = items.get(position);
-                Intent i = new Intent(context, CourseProjectsActivity.class);
-                i.putExtra("SELECTED_GROUP_ID",item.group_id);
-                i.putExtra("SELECTED_GROUP_NAME",item.group_name);
-                i.putExtra("IS_EVALUATE",true);
-                LoggedUser.status = LoggedUser.AS_EVALUATE;
-                context.startActivity(i);
+                if(item.is_confirmed) {
+                    Intent i = new Intent(context, CourseProjectsActivity.class);
+                    i.putExtra("SELECTED_GROUP_ID", item.group_id);
+                    i.putExtra("SELECTED_GROUP_NAME", item.group_name);
+                    i.putExtra("IS_EVALUATE", true);
+                    LoggedUser.status = LoggedUser.AS_EVALUATE;
+                    context.startActivity(i);
+                }
+                else{
+                    Utility.showMessage("Wait Until Confirm the Group By Teacher",context);
+                }
             }
         });
         img_view_students.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 CourseGroupItem item = items.get(position);
+                if(item.is_confirmed){
                 Intent i = new Intent(context, GroupDetailsActivity.class);
                 i.putExtra("SELECTED_GROUP_ID",item.group_id);
                 i.putExtra("SELECTED_GROUP_NAME",item.group_name);
                 i.putExtra("IS_EVALUATE",true);
                 LoggedUser.status = LoggedUser.AS_EVALUATE;
                 context.startActivity(i);
+                }
+                else{
+                    Utility.showMessage("Wait Until Confirm the Group By Teacher",context);
+                }
             }
         });
 

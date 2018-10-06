@@ -73,7 +73,7 @@ public class CourseProjectsActivity extends AppCompatActivity {
         img_add_project = (ImageView)findViewById(R.id.img_add_project);
         list_group_projects = (ListView)findViewById(R.id.list_group_projects);
 
-        txt_group_name.setText("Group: "+SELECTED_GROUP_NAME);
+        txt_group_name.setText("Projects of Group: "+SELECTED_GROUP_NAME);
 
         img_add_project.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,11 +115,11 @@ public class CourseProjectsActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        setSampleData();
-       // new CallGroupProjects().execute(SELECTED_GROUP_ID);
-        Log.e("MOODLEMOBILE",projects.toString());
-        groupProjectsAdapter = new GroupProjectsAdapter(getApplicationContext(),projects);
-        list_group_projects.setAdapter(groupProjectsAdapter);
+         new CallGroupProjects().execute(SELECTED_GROUP_ID);
+//        setSampleData();
+//        Log.e("MOODLEMOBILE",projects.toString());
+//        groupProjectsAdapter = new GroupProjectsAdapter(getApplicationContext(),projects);
+//        list_group_projects.setAdapter(groupProjectsAdapter);
     }
 
     private void setSampleData(){
@@ -161,9 +161,9 @@ public class CourseProjectsActivity extends AppCompatActivity {
                     if (project_name.getText().toString().length() > 1) {
                         entered_project_name = project_name.getText().toString();
                                 addProjectDialog.dismiss();
-                        //new AddGroupProject().execute(SELECTED_GROUP_ID,entered_project_name);
-                        add_new_project_to_list("33");
-                                Utility.showMessage("Successfully Added the Project", context);
+                        new AddGroupProject().execute(SELECTED_GROUP_ID,entered_project_name);
+                       // add_new_project_to_list("33");
+                       //         Utility.showMessage("Successfully Added the Project", context);
 
                     } else {
                         Utility.showMessage("Project Name Required", context);
@@ -223,6 +223,7 @@ public class CourseProjectsActivity extends AppCompatActivity {
             JSONObject jo = new JSONObject(msg);
             if(jo.getString("msg").equals("Success")){
                 add_new_project_to_list(jo.getString("data"));
+                Utility.showMessage(jo.getString("msg"),getApplicationContext());
             }
             else{
                 Utility.showMessage(jo.getString("msg"),getApplicationContext());

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -44,6 +45,7 @@ public class CourseGroupsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_course_groups);
         getSupportActionBar().hide();
         prgController = new ProgressBarController(this);
+        wsCalls =new WSCalls(getApplicationContext());
         txt_course_groups = (TextView)findViewById(R.id.txt_course_groups);
         img_add_course = (ImageView)findViewById(R.id.img_add_course);
         list_course_groups = (ListView)findViewById(R.id.list_course_groups);
@@ -93,12 +95,13 @@ public class CourseGroupsActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        //new LoadParticipanDetails().execute(LoggedUser.id);
-        setSampleData();
-        if(owngroup == null){
-            layout_owngroup.setVisibility(View.GONE);
-        }
-        list_course_groups.setAdapter(new CourseGroupsAdapter(getApplicationContext(),groups, CourseGroupsAdapter.GENERAL_GROUP));
+        Log.e("Moodle id",LoggedUser.id);
+        new LoadParticipanDetails().execute(LoggedUser.id);
+//        setSampleData();
+//        if(owngroup == null){
+//            layout_owngroup.setVisibility(View.GONE);
+//        }
+//        list_course_groups.setAdapter(new CourseGroupsAdapter(getApplicationContext(),groups, CourseGroupsAdapter.GENERAL_GROUP));
     }
 
     private void setSampleData(){
@@ -122,23 +125,33 @@ public class CourseGroupsActivity extends AppCompatActivity {
             if(jo.getString("msg").equals("Success")){
                 jdata = jo.getJSONObject("data");
                 jpersonal = jdata.getJSONObject("personal");
-                LoggedUser.course_id = jpersonal.getString("courseid");
-                LoggedUser.status = jdata.getString("roleshortname");
-                LoggedUser.roleshortname = jdata.getString("roleshortname");
+               // LoggedUser.course_id = jpersonal.getString("courseid");
+                LoggedUser.status = jpersonal.getString("roleshortname");
+                LoggedUser.roleshortname = jpersonal.getString("roleshortname");
                 owngroup = new CourseGroupItem();
-                jownGroup = jdata.getJSONObject("owngroup");
-                if(jownGroup == null || jownGroup.length() == 0){
+
+                //Log.e("Moodle Own",jownGroup.toString());
+                //layout_owngroup.setVisibility(View.GONE);
+                if(jdata.isNull("owngroup")){
                     layout_owngroup.setVisibility(View.GONE);
                 }
                 else{
+                    jownGroup = jdata.getJSONObject("owngroup");
                     layout_owngroup.setVisibility(View.VISIBLE);
                     owngroup.group_id = jownGroup.getString("gid");
                     owngroup.group_name = jownGroup.getString("groupname");
+//                    if(jownGroup.getString("confirmed").equals("1")){
+//                        owngroup.is_confirmed = true;
+//                    }
+//                    else{
+//                        owngroup.is_confirmed = false;
+//                    }
+
 
                 }
                 jgroups = jdata.getJSONArray("assigned_groups");
                 groups = new ArrayList<CourseGroupItem>();
-                if(jownGroup == null || jownGroup.length() == 0) {
+                if(jgroups == null || jgroups.length() == 0) {
                     jgroups =new JSONArray();
                 }
                 for(int  i=0; i<jgroups.length();i++){
@@ -146,6 +159,12 @@ public class CourseGroupsActivity extends AppCompatActivity {
                     item =new CourseGroupItem();
                     item.group_id = jGroup.getString("groupid");
                     item.group_name= jGroup.getString("groupname");
+                    if(jGroup.getString("confirmed").equals("1")){
+                        item.is_confirmed = true;
+                    }
+                    else{
+                        item.is_confirmed = false;
+                    }
                     groups.add(item);
                 }
                 list_course_groups.setAdapter(new CourseGroupsAdapter(getApplicationContext(),groups, CourseGroupsAdapter.GENERAL_GROUP));
@@ -156,6 +175,7 @@ public class CourseGroupsActivity extends AppCompatActivity {
             }
         } catch (JSONException e) {
             e.printStackTrace();
+            Log.e("Moodle Error",e.getMessage());
         }
 
     }
@@ -171,6 +191,7 @@ public class CourseGroupsActivity extends AppCompatActivity {
         protected void onPostExecute(ResObject response) {
             super.onPostExecute(response);
             prgController.hideProgressBar();
+            Log.e("Moodle Res",response.msg);
             if(response.validity.equals(Constants.VALIDITY_SUCCESS)){
                 populate_details(response.msg);
             }

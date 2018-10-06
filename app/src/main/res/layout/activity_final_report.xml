@@ -53,13 +53,13 @@
             android:weightSum="3">
 
             <Button
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Download"
-            android:background="@null"
-            android:textColor="@color/app_text_color_warning"
-            android:id="@+id/btn_download"/>
+                android:id="@+id/btn_download"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@null"
+                android:text="Download"
+                android:textColor="@color/app_text_color_warning" />
 
             <TextView
                 android:layout_width="0dp"
@@ -137,7 +137,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:orientation="horizontal"
                     android:weightSum="2"
                     >
@@ -152,13 +152,15 @@
                         android:id="@+id/btn_download_preview"/>
 
                     <LinearLayout
+
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:layout_weight="1">
 
                         <LinearLayout
-                            android:layout_width="match_parent"
+                            android:layout_gravity="end"
+                            android:layout_width="100dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="2"
                             android:orientation="horizontal"

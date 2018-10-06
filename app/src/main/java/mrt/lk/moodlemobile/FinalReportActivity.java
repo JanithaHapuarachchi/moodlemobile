@@ -69,6 +69,8 @@ public class FinalReportActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_final_report);
         context = getApplicationContext();
+        r_final= r_preview = new ReportItem();
+
         prgController = new ProgressBarController(this);
         wsCalls = new WSCalls(getApplicationContext());
         wc= new ArrayList<WorkCommentItem>();
@@ -211,7 +213,7 @@ public class FinalReportActivity extends AppCompatActivity {
             }
         });
         preview_report_link = final_report_link = "";
-        //new CallFinalReports().execute(PROJECT_ID);
+        new CallFinalReports().execute(PROJECT_ID);
 
     }
 
@@ -294,10 +296,15 @@ public class FinalReportActivity extends AppCompatActivity {
     }
 
     private void populate_final_reports(String msg){
+        set_buttoncolors(btn_like,btn_unlike,false,false);
         try {
             JSONObject jo = new JSONObject(msg);
             if(jo.getString("msg").equals("Success")){
                 JSONObject data = jo.getJSONObject("data");
+
+                if(data.length()<1 || data.toString().equals("[]")){
+                    set_buttoncolors(btn_like,btn_unlike,false,false);
+                }
                 JSONObject jprevw = data.getJSONObject("preview_report");
                 JSONObject jfinal = data.getJSONObject("final_report");
                 JSONArray jcomments,jlikes;
@@ -364,6 +371,7 @@ public class FinalReportActivity extends AppCompatActivity {
             }
             else{
                 Utility.showMessage(jo.getString("msg"),getApplicationContext());
+                set_buttoncolors(btn_like,btn_unlike,false,false);
             }
             showcomments();
 
@@ -574,13 +582,14 @@ public class FinalReportActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            ProjectReportActivity.prgController.showProgressBar("Sending...");
+           // prgController = new ProgressBarController(FinalReportActivity.this);
+            prgController.showProgressBar("Sending...");
         }
 
         @Override
         protected void onPostExecute(ResObject response) {
             super.onPostExecute(response);
-            ProjectReportActivity.prgController.hideProgressBar();
+            prgController.hideProgressBar();
             if(response.validity.equals(Constants.VALIDITY_SUCCESS)){
                 populate_like_unlike_response(response.msg,reportid,is_like,btn_like,btn_unlike);
             }

@@ -480,7 +480,7 @@ public class WSCalls {
             res_object.validity = Constants.VALIDITY_FAILED;
             res_object.msg = e.getMessage();
         }
-
+    Log.e("Moodle Res",res_object.toString());
         return res_object;
     }
 

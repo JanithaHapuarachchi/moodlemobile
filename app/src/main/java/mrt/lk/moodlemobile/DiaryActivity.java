@@ -202,7 +202,7 @@ public class DiaryActivity extends AppCompatActivity {
             else{
                 work.comment_type = "JPG";
                 work.comment = "";
-                work.comment_location = "https://exposingtheinvisible.org/media/resources/headers/large/geo2.png?1444601948";
+                work.comment_location = Constants.MAIN_URL+"docs/files/Book1.xlsx";
             }
             work.participant =p;
             work.seen_list = new ArrayList<WorkSeenItem>();
