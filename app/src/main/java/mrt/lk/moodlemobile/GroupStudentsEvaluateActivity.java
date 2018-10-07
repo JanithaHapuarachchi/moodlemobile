@@ -1,6 +1,7 @@
 package mrt.lk.moodlemobile;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -8,12 +9,20 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 import mrt.lk.moodlemobile.adapters.GroupStudentInfoAdapter;
 import mrt.lk.moodlemobile.data.LoggedUser;
 import mrt.lk.moodlemobile.data.ParticipantItem;
+import mrt.lk.moodlemobile.data.ResObject;
+import mrt.lk.moodlemobile.utils.Constants;
 import mrt.lk.moodlemobile.utils.ProgressBarController;
+import mrt.lk.moodlemobile.utils.Utility;
+import mrt.lk.moodlemobile.utils.WSCalls;
 
 public class GroupStudentsEvaluateActivity extends AppCompatActivity {
 
@@ -23,13 +32,15 @@ public class GroupStudentsEvaluateActivity extends AppCompatActivity {
     ListView list_evaluate_students;
     GroupStudentInfoAdapter adapter;
     ArrayList<ParticipantItem> participants;
+    WSCalls wsCalls;
+    GroupStudentInfoAdapter infoAdapter;;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_students_evaluate);
 
-
+        wsCalls = new WSCalls(getApplicationContext());
         prgController = new ProgressBarController(this);
         txt_title = (TextView)findViewById(R.id.txt_title);
         list_evaluate_students = (ListView)findViewById(R.id.list_evaluate_students);
@@ -60,10 +71,10 @@ public class GroupStudentsEvaluateActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
-
-        setSampleData();
-        adapter = new GroupStudentInfoAdapter(getApplicationContext(),participants, GroupStudentInfoAdapter.EVALUATION_GROUP);
-        list_evaluate_students.setAdapter(adapter);
+        new CallGroupStudens().execute(SELECTED_GROUP_ID);
+       // setSampleData();
+     //   adapter = new GroupStudentInfoAdapter(getApplicationContext(),participants, GroupStudentInfoAdapter.EVALUATION_GROUP);
+      //  list_evaluate_students.setAdapter(adapter);
     }
 
 
@@ -76,6 +87,61 @@ public class GroupStudentsEvaluateActivity extends AppCompatActivity {
             item.name = "Name : "+(i+1);
             //item.isSelected = true;
             participants.add(item);
+        }
+    }
+
+
+    private void populate_Students(String msg){
+        try {
+            JSONObject jo = new JSONObject(msg);
+            if(jo.getString("msg").equals("Success")){
+                JSONArray ja = jo.getJSONArray("data");
+                JSONObject j;
+                participants = new ArrayList<ParticipantItem>();
+                ParticipantItem pi;
+                for(int i=0; i< ja.length();i++){
+                    j = ja.getJSONObject(i);
+                    pi = new ParticipantItem();
+                    pi.firstname = j.getString("firstname");
+                    pi.lastname = j.getString("lastname");
+                    pi.id = j.getString("participantid");
+                    participants.add(pi);
+                }
+                adapter = new GroupStudentInfoAdapter(getApplicationContext(),participants, GroupStudentInfoAdapter.EVALUATION_GROUP);
+                list_evaluate_students.setAdapter(adapter);
+            }
+            else{
+                Utility.showMessage(jo.getString("msg"),getApplicationContext());
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    class CallGroupStudens extends AsyncTask<String,Void,ResObject> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            prgController.showProgressBar("Loading...");
+        }
+
+        @Override
+        protected void onPostExecute(ResObject response) {
+            super.onPostExecute(response);
+            prgController.hideProgressBar();
+            if(response.validity.equals(Constants.VALIDITY_SUCCESS)){
+                populate_Students(response.msg);
+            }
+            else{
+                Utility.showMessage(response.msg,getApplicationContext());
+            }
+        }
+
+        @Override
+        protected ResObject doInBackground(String... params) {
+            return wsCalls.course_group_students(params[0]);
         }
     }
 }

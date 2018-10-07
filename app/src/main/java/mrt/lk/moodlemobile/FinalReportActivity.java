@@ -37,6 +37,7 @@ import mrt.lk.moodlemobile.data.ResObject;
 import mrt.lk.moodlemobile.data.WorkCommentItem;
 import mrt.lk.moodlemobile.utils.Constants;
 import mrt.lk.moodlemobile.utils.DownloadFileFromUrl;
+import mrt.lk.moodlemobile.utils.FilePath;
 import mrt.lk.moodlemobile.utils.ProgressBarController;
 import mrt.lk.moodlemobile.utils.Utility;
 import mrt.lk.moodlemobile.utils.WSCalls;
@@ -125,6 +126,7 @@ public class FinalReportActivity extends AppCompatActivity {
             img_upload_final_report.setVisibility(View.GONE);
         }
 
+        img_upload_final_report.setVisibility(View.VISIBLE);
         btn_download.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -260,7 +262,8 @@ public class FinalReportActivity extends AppCompatActivity {
         if (requestCode == 1) {
             if (resultCode == Activity.RESULT_OK) {
                 Uri selectedFileURI = data.getData();
-                 file = new File(selectedFileURI.getPath().toString());
+               String selectedFilePath = FilePath.getPath(this,selectedFileURI);
+                 file = new File(selectedFilePath);
                 Log.d("MoodleMobile", "File : " + file.getName());
                 confirmSendFile(file.getName());
 

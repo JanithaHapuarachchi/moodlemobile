@@ -69,10 +69,10 @@ public class GroupDetailsActivity extends AppCompatActivity {
 //            SELECTED_GROUP_NAME= (String) savedInstanceState.getSerializable("GIVEN_GROUP_NAME");
 //        }
         getSupportActionBar().setTitle(SELECTED_GROUP_NAME);
-        //new CallGroupStudens().execute(SELECTED_GROUP_ID);
-        setSampleData();
-        infoAdapter = new GroupStudentInfoAdapter(getApplicationContext(),participants, GroupStudentInfoAdapter.GENERAL_GROUP);
-        list_students.setAdapter(infoAdapter);
+        new CallGroupStudens().execute(SELECTED_GROUP_ID);
+      //  setSampleData();
+      //  infoAdapter = new GroupStudentInfoAdapter(getApplicationContext(),participants, GroupStudentInfoAdapter.GENERAL_GROUP);
+      //  list_students.setAdapter(infoAdapter);
         add_students.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -84,7 +84,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
             }
         });
 
-        if(LoggedUser.status.equals(LoggedUser.AS_EVALUATE)){
+        if(LoggedUser.roleshortname.equals(LoggedUser.AS_EVALUATE)){
             btn_confirm.setVisibility(View.VISIBLE);
         }
         else{

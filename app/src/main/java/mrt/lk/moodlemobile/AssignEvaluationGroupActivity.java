@@ -56,10 +56,10 @@ public class AssignEvaluationGroupActivity extends AppCompatActivity {
         txt_title = (TextView)findViewById(R.id.txt_title);
         list_assign_remove_groups = (ExpandableListView)findViewById(R.id.list_assign_remove_groups);
         txt_title.setText("Set Evaluation Group for Project "+PROJECT_NAME+" of Group "+SELECTED_GROUP_NAME);
-       // callData();
-        setSampleData();
-        adapter = new AssignEvalutionGroupAdapter(getApplicationContext(),header,childrendata);
-        list_assign_remove_groups.setAdapter(adapter);
+        callData();
+      //  setSampleData();
+       // adapter = new AssignEvalutionGroupAdapter(getApplicationContext(),header,childrendata);
+     //   list_assign_remove_groups.setAdapter(adapter);
 
     }
 
@@ -116,11 +116,14 @@ public class AssignEvaluationGroupActivity extends AppCompatActivity {
         try {
             JSONObject jo = new JSONObject(msg);
             if(jo.getString("msg").equals("Success")){
-                JSONArray ja = jo.getJSONArray("data");
+                JSONArray ja ;
                 CourseGroupItem item;
                 JSONObject j;
-                if(ja ==null){
+                if(jo.isNull("data")){
                     ja = new JSONArray();
+                }
+                else{
+                    ja = jo.getJSONArray("data");
                 }
                 for(int i=0; i<ja.length();i++){
                     j = ja.getJSONObject(i);
@@ -145,11 +148,14 @@ public class AssignEvaluationGroupActivity extends AppCompatActivity {
         try {
             JSONObject jo = new JSONObject(msg);
             if(jo.getString("msg").equals("Success")){
-                JSONArray ja = jo.getJSONArray("data");
+                JSONArray ja;
                 CourseGroupItem item;
                 JSONObject j;
-                if(ja ==null){
+                if(jo.isNull("data")){
                     ja = new JSONArray();
+                }
+                else {
+                    ja = jo.getJSONArray("data");
                 }
 
                 for(int i=0; i<ja.length();i++){

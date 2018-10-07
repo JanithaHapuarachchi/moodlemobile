@@ -96,12 +96,12 @@ public class CourseGroupsActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Log.e("Moodle id",LoggedUser.id);
-        new LoadParticipanDetails().execute(LoggedUser.id);
-//        setSampleData();
-//        if(owngroup == null){
-//            layout_owngroup.setVisibility(View.GONE);
-//        }
-//        list_course_groups.setAdapter(new CourseGroupsAdapter(getApplicationContext(),groups, CourseGroupsAdapter.GENERAL_GROUP));
+      //  new LoadParticipanDetails().execute(LoggedUser.id);
+        setSampleData();
+        if(owngroup == null){
+            layout_owngroup.setVisibility(View.GONE);
+        }
+        list_course_groups.setAdapter(new CourseGroupsAdapter(getApplicationContext(),groups, CourseGroupsAdapter.GENERAL_GROUP));
     }
 
     private void setSampleData(){
@@ -111,6 +111,7 @@ public class CourseGroupsActivity extends AppCompatActivity {
             item = new CourseGroupItem();
             item.group_id= ""+i;
             item.group_name = "Name : "+(i+1);
+            item.is_confirmed =true;
             groups.add(item);
         }
     }

@@ -115,11 +115,11 @@ public class CourseProjectsActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-         new CallGroupProjects().execute(SELECTED_GROUP_ID);
-//        setSampleData();
-//        Log.e("MOODLEMOBILE",projects.toString());
-//        groupProjectsAdapter = new GroupProjectsAdapter(getApplicationContext(),projects);
-//        list_group_projects.setAdapter(groupProjectsAdapter);
+      //   new CallGroupProjects().execute(SELECTED_GROUP_ID);
+        setSampleData();
+        Log.e("MOODLEMOBILE",projects.toString());
+        groupProjectsAdapter = new GroupProjectsAdapter(getApplicationContext(),projects);
+        list_group_projects.setAdapter(groupProjectsAdapter);
     }
 
     private void setSampleData(){
@@ -191,7 +191,7 @@ public class CourseProjectsActivity extends AppCompatActivity {
     }
 
     private void populate_projects(String msg){
-        Log.e("MOODLEMOBILE",projects.toString());
+        Log.e("MOODLEMOBILE",msg);
         projects = new ArrayList<GroupProjectItem>();
         GroupProjectItem item;
         try {

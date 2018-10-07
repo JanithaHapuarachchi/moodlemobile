@@ -88,11 +88,11 @@ public class DiaryActivity extends AppCompatActivity {
             layout_msg.setVisibility(View.VISIBLE);
         }
 
-        //works = new ArrayList<>();
-       // new CallDiary().execute();
-        setSampleData();
-        adapter = new DairyAdapter(getApplicationContext(),works,SELECTED_PARTICIPANT_ID);
-        list_works.setAdapter(adapter);
+        works = new ArrayList<>();
+        new CallDiary().execute();
+       // setSampleData();
+       // adapter = new DairyAdapter(getApplicationContext(),works,SELECTED_PARTICIPANT_ID);
+       // list_works.setAdapter(adapter);
 
         btn_mark.setOnClickListener(new View.OnClickListener() {
             @Override

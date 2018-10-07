@@ -38,6 +38,7 @@ import mrt.lk.moodlemobile.data.ResObject;
 import mrt.lk.moodlemobile.data.WorkCommentItem;
 import mrt.lk.moodlemobile.data.WorkSeenItem;
 import mrt.lk.moodlemobile.utils.Constants;
+import mrt.lk.moodlemobile.utils.FilePath;
 import mrt.lk.moodlemobile.utils.ProgressBarController;
 import mrt.lk.moodlemobile.utils.Utility;
 import mrt.lk.moodlemobile.utils.WSCalls;
@@ -178,7 +179,9 @@ public class ProjectWorksActivity extends AppCompatActivity {
         if (requestCode == 1) {
             if (resultCode == Activity.RESULT_OK) {
                  selectedFileURI = data.getData();
-                 file = new File(selectedFileURI.getPath().toString());
+                String selectedFilePath = FilePath.getPath(this,selectedFileURI);
+                // file = new File(selectedFileURI.getPath().toString());
+                file = new File(selectedFilePath);
                 Log.d("MoodleMobile", "File : " + file.getName());
                 confirmSendFile(file.getName());
 //                uploadedFileName = file.getName().toString();

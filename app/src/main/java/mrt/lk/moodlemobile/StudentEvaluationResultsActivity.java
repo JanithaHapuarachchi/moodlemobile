@@ -53,10 +53,10 @@ public class StudentEvaluationResultsActivity extends AppCompatActivity {
         list_evaluation_results = (ExpandableListView)findViewById(R.id.list_evaluation_results);
         txt_title.setText("Evaluation Results for "+PARTICIPANT_NAME);
 
-      //  new CallEvaluationResults().execute(PARTICIPANT_ID);
-        setSampleData();
-        adapter = new EvaluationResultsAdapter(getApplicationContext(),header,childrendata);
-        list_evaluation_results.setAdapter(adapter);
+       new CallEvaluationResults().execute(PARTICIPANT_ID);
+        //setSampleData();
+       // adapter = new EvaluationResultsAdapter(getApplicationContext(),header,childrendata);
+        //list_evaluation_results.setAdapter(adapter);
     }
 
     private void setSampleData(){

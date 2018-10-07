@@ -126,10 +126,10 @@ public class ProjectMenuActivity extends AppCompatActivity {
         }
         else {
             new CallSubProjects().execute(PROJECT_ID);
-            setSampleData();
-            setSampleEvaluationGroups();
-            adapter = new GroupSubProjectAdapter(getApplicationContext(), projects);
-            list_subprojects.setAdapter(adapter);
+           // setSampleData();
+           // setSampleEvaluationGroups();
+           // adapter = new GroupSubProjectAdapter(getApplicationContext(), projects);
+           // list_subprojects.setAdapter(adapter);
         }
         img_add_sub_group.setOnClickListener(new View.OnClickListener() {
             @Override
