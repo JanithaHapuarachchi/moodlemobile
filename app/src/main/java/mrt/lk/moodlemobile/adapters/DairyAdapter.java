@@ -31,7 +31,7 @@ public class DairyAdapter extends ArrayAdapter {
     boolean isProject;
     private final LayoutInflater mInflater;
     //public static final String PDF = "PDF";
-    public static final String TEXT = "TEXT";
+    public static final String TEXT = "text";
     String pid;
 
 
@@ -69,7 +69,7 @@ public class DairyAdapter extends ArrayAdapter {
         WorkCommentItem item = works.get(position);
         ParticipantItem p = item.participant;
         ArrayList<WorkSeenItem> s = item.seen_list;
-        txt_time.setText(item.time);
+        txt_time.setText(item.time.trim());
         txt_comment.setText(item.comment);
         txt_comment_by.setText(p.name);
         txt_project.setText(item.project_name);
@@ -85,17 +85,7 @@ public class DairyAdapter extends ArrayAdapter {
         else{
             txt_seen.setVisibility(View.GONE);
         }
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)layout_work.getLayoutParams();
 
-        if(pid.equals(p.id)){
-            layout_work.setBackgroundResource(R.color.app_background_shadow);
-            params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        }
-        else{
-            layout_work.setBackgroundResource(R.color.white);
-            params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-        }
-        layout_work.setLayoutParams(params);
 
         if(item.comment_type.equals(TEXT)){
             btn_download.setVisibility(View.GONE);
@@ -105,6 +95,20 @@ public class DairyAdapter extends ArrayAdapter {
             btn_download.setVisibility(View.VISIBLE);
             txt_comment.setVisibility(View.GONE);
         }
+
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)layout_work.getLayoutParams();
+
+        if(pid.equals(p.id)){
+            layout_work.setBackgroundResource(R.color.app_background_shadow);
+            params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            params.addRule(RelativeLayout.ALIGN_PARENT_LEFT,0);
+        }
+        else{
+            layout_work.setBackgroundResource(R.color.white);
+            params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+            params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT,0);
+        }
+        layout_work.setLayoutParams(params);
 
         btn_download.setOnClickListener(new View.OnClickListener() {
             @Override

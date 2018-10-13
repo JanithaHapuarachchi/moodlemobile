@@ -119,7 +119,7 @@ public class StudentEvaluationResultsActivity extends AppCompatActivity {
                         eval = stds.getJSONObject(j);
                         item = new EvaluationResultItem();
                         item.participant_id= eval.getString("participant_id");
-                        item.participant_name = eval.getString("participant_name");
+                        item.participant_name = eval.getString("participant_fname"); //participant_name
                         item.project_id = prj.getString("project_id");
                         item.project_name =prj.getString("project_name");
                         item.marks = eval.getString("marks");
@@ -131,7 +131,7 @@ public class StudentEvaluationResultsActivity extends AppCompatActivity {
                         eval = teachs.getJSONObject(j);
                         item = new EvaluationResultItem();
                         item.participant_id= eval.getString("participant_id");
-                        item.participant_name = eval.getString("participant_name");
+                        item.participant_name = eval.getString("participant_fname");
                         item.project_id = prj.getString("project_id");
                         item.project_name =prj.getString("project_name");
                         item.marks = eval.getString("marks");

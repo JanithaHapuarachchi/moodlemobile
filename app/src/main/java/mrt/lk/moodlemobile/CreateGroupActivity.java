@@ -83,7 +83,7 @@ public class CreateGroupActivity extends AppCompatActivity {
         btn_done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!group_name.getText().toString().equals("")){
+                if(group_name.getText().toString().equals("")){
                     Utility.showMessage("Please add a Name",CreateGroupActivity.this);
                 }
                 else {

@@ -5,6 +5,7 @@
     >
 
     <LinearLayout
+
         android:padding="5dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -17,7 +18,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/txt_time"
-        android:text="Time"
+        android:text="2018-10-01"
         android:layout_marginBottom="2dp"/>
 
         <TextView
@@ -26,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/txt_project"
-            android:text="Project Name"
+            android:text=""
             android:layout_marginBottom="2dp"/>
 
     <TextView

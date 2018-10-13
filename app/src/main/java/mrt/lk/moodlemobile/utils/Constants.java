@@ -28,6 +28,7 @@ public class Constants {
     public static String SERVER_PORT = "SERVER_PORT";
     public static String SERVER_TENANT = "SERVER_TENANT";
     public static String MAIN_URL = "https://mpbl.projects.uom.lk/mobileapp/";
+    public static String ROOT_URL = "https://mpbl.projects.uom.lk/";
     public static String LOGIN_URL = "https://mpbl.projects.uom.lk/login/token.php?";
 
     public static String unallocated_group_students = "unallocated_group_students.php";

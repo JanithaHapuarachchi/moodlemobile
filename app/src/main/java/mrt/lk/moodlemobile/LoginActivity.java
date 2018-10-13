@@ -119,36 +119,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void register_gcm(){
-        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener( LoginActivity.this,  new OnSuccessListener<InstanceIdResult>() {
-            @Override
-            public void onSuccess(InstanceIdResult instanceIdResult) {
-                String newToken = instanceIdResult.getToken();
-                new RegisterGCM().execute(newToken);
-                Log.e("Moodle Mobile newToken",newToken);
-            }
-//            @Override
-//            public void onSuccess(InstanceIdResult instanceIdResult) {
-//                String newToken = instanceIdResult.getToken();
-//                Log.e("newToken",newToken);
-//
-//            }
-        });
-    }
 
-    class RegisterGCM extends AsyncTask<String,Void,Void> {
-        @Override
-        protected Void doInBackground(String... params) {
-            new WSCalls(getApplicationContext()).add_gcm_participant(LoggedUser.id,params[0]);
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            Log.e("Moodle","Registered");
-        }
-    }
 
     public void checkLogin(String uname,String pswrd) {
         if (uname.equals("") || pswrd.equals("")) {
@@ -166,8 +137,8 @@ public class LoginActivity extends AppCompatActivity {
                 Utility.showMessage(obj.getString("error"),getApplicationContext());
             }
             else{
-                LoggedUser.id = txt_username.getText().toString();
-                register_gcm();
+                LoggedUser.userid = txt_username.getText().toString();
+               // register_gcm();
                 gotoMenu();
             }
         } catch (JSONException e) {

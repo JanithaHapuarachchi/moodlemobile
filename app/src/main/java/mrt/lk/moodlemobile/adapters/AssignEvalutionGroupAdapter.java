@@ -3,6 +3,7 @@ package mrt.lk.moodlemobile.adapters;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -170,6 +171,7 @@ public class AssignEvalutionGroupAdapter extends BaseExpandableListAdapter {
 
     private void add_group(int childposition){
         ArrayList<CourseGroupItem> childN = child.get(header.get(1));
+        Log.e("Moodle GID",""+childN.get(childposition).group_id);
         new AddEvalGroup(childposition).execute(childN.get(childposition).group_id);
     }
 
@@ -242,7 +244,8 @@ public class AssignEvalutionGroupAdapter extends BaseExpandableListAdapter {
 
         @Override
         protected ResObject doInBackground(String... params) {
-            return new WSCalls(context).remove_group_project_evaluation_group(LoggedUser.group_id,AssignEvaluationGroupActivity.PROJECT_ID,params[0]);
+         //   return new WSCalls(context).remove_group_project_evaluation_group(LoggedUser.group_id,AssignEvaluationGroupActivity.PROJECT_ID,params[0]);
+            return new WSCalls(context).remove_group_project_evaluation_group(params[0],AssignEvaluationGroupActivity.PROJECT_ID,AssignEvaluationGroupActivity.SELECTED_GROUP_ID);
         }
     }
 
@@ -272,7 +275,8 @@ public class AssignEvalutionGroupAdapter extends BaseExpandableListAdapter {
 
         @Override
         protected ResObject doInBackground(String... params) {
-            return new WSCalls(context).add_group_project_evaluation_group(LoggedUser.group_id,AssignEvaluationGroupActivity.PROJECT_ID,params[0]);
+          //  return new WSCalls(context).add_group_project_evaluation_group(LoggedUser.group_id,AssignEvaluationGroupActivity.PROJECT_ID,params[0]);
+            return new WSCalls(context).add_group_project_evaluation_group(params[0],AssignEvaluationGroupActivity.PROJECT_ID,AssignEvaluationGroupActivity.SELECTED_GROUP_ID);
         }
     }
 

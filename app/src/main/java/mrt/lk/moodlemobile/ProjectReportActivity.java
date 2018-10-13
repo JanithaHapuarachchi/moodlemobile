@@ -35,6 +35,7 @@ import mrt.lk.moodlemobile.data.ResObject;
 import mrt.lk.moodlemobile.data.WorkCommentItem;
 import mrt.lk.moodlemobile.data.WorkSeenItem;
 import mrt.lk.moodlemobile.utils.Constants;
+import mrt.lk.moodlemobile.utils.FilePath;
 import mrt.lk.moodlemobile.utils.ProgressBarController;
 import mrt.lk.moodlemobile.utils.Utility;
 import mrt.lk.moodlemobile.utils.WSCalls;
@@ -81,15 +82,15 @@ public class ProjectReportActivity extends AppCompatActivity {
         else{
             txt_reports_title.setText("Sub project Reports: "+PROJECT_NAME);
         }
-        //new LoadProjectReports().execute(PROJECT_ID);
-        setSampleData();
-        if(IS_PROJECT) {
-            adapter = new ContributionReportAdapter(getApplicationContext(), reports, PROJECT_ID,true);
-        }
-        else{
-            adapter = new ContributionReportAdapter(getApplicationContext(), reports, PROJECT_ID,false);
-        }
-        list_reports.setAdapter(adapter);
+        new LoadProjectReports().execute(PROJECT_ID);
+       // setSampleData();
+//        if(IS_PROJECT) {
+//            adapter = new ContributionReportAdapter(getApplicationContext(), reports, PROJECT_ID,true);
+//        }
+//        else{
+//            adapter = new ContributionReportAdapter(getApplicationContext(), reports, PROJECT_ID,false);
+//        }
+//        list_reports.setAdapter(adapter);
 
 
         img_upload_report.setOnClickListener(new View.OnClickListener() {
@@ -149,7 +150,8 @@ public class ProjectReportActivity extends AppCompatActivity {
         if (requestCode == 1) {
             if (resultCode == Activity.RESULT_OK) {
                 Uri selectedFileURI = data.getData();
-                 file = new File(selectedFileURI.getPath().toString());
+                String selectedFilePath = FilePath.getPath(this,selectedFileURI);
+                 file = new File(selectedFilePath);
                 Log.d("MoodleMobile", "File : " + file.getName());
                 confirmSendFile(file.getName());
 

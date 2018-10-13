@@ -36,6 +36,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
     GroupStudentInfoAdapter infoAdapter;
     FloatingActionButton add_students;
     public static String SELECTED_GROUP_ID,SELECTED_GROUP_NAME;
+    public static boolean IS_EVALUATE;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +53,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
             if(extras == null) {
                 SELECTED_GROUP_ID= "";
                 SELECTED_GROUP_NAME= "";
+
             } else {
                 SELECTED_GROUP_ID= extras.getString("SELECTED_GROUP_ID");
                 SELECTED_GROUP_NAME= extras.getString("SELECTED_GROUP_NAME");
@@ -69,6 +71,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
 //            SELECTED_GROUP_NAME= (String) savedInstanceState.getSerializable("GIVEN_GROUP_NAME");
 //        }
         getSupportActionBar().setTitle(SELECTED_GROUP_NAME);
+        group_name.setText(SELECTED_GROUP_NAME);
         new CallGroupStudens().execute(SELECTED_GROUP_ID);
       //  setSampleData();
       //  infoAdapter = new GroupStudentInfoAdapter(getApplicationContext(),participants, GroupStudentInfoAdapter.GENERAL_GROUP);

@@ -18,7 +18,7 @@ public class LoggedUser {
     public static String username ;
     public static String firstname ;
     public static String lastname ;
-    public static String roleshortname ="" ;
+    public static String roleshortname ;
     public static String coursefullname ;
     public static String rolearchetype ;
     public static String courseshortname ;

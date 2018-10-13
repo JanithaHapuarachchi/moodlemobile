@@ -11,6 +11,10 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -96,12 +100,12 @@ public class CourseGroupsActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Log.e("Moodle id",LoggedUser.id);
-      //  new LoadParticipanDetails().execute(LoggedUser.id);
-        setSampleData();
-        if(owngroup == null){
-            layout_owngroup.setVisibility(View.GONE);
-        }
-        list_course_groups.setAdapter(new CourseGroupsAdapter(getApplicationContext(),groups, CourseGroupsAdapter.GENERAL_GROUP));
+        new LoadParticipanDetails().execute(LoggedUser.userid);
+//        setSampleData();
+//        if(owngroup == null){
+//            layout_owngroup.setVisibility(View.GONE);
+//        }
+//        list_course_groups.setAdapter(new CourseGroupsAdapter(getApplicationContext(),groups, CourseGroupsAdapter.GENERAL_GROUP));
     }
 
     private void setSampleData(){
@@ -129,6 +133,9 @@ public class CourseGroupsActivity extends AppCompatActivity {
                // LoggedUser.course_id = jpersonal.getString("courseid");
                 LoggedUser.status = jpersonal.getString("roleshortname");
                 LoggedUser.roleshortname = jpersonal.getString("roleshortname");
+                LoggedUser.id = jpersonal.getString("id");
+                LoggedUser.name = jpersonal.getString("firstname");
+                register_gcm();
                 owngroup = new CourseGroupItem();
 
                 //Log.e("Moodle Own",jownGroup.toString());
@@ -140,7 +147,9 @@ public class CourseGroupsActivity extends AppCompatActivity {
                     jownGroup = jdata.getJSONObject("owngroup");
                     layout_owngroup.setVisibility(View.VISIBLE);
                     owngroup.group_id = jownGroup.getString("gid");
+                    Log.e("Moodle OWN GROUP",owngroup.group_id);
                     owngroup.group_name = jownGroup.getString("groupname");
+                    txt_course_group.setText(owngroup.group_name);
 //                    if(jownGroup.getString("confirmed").equals("1")){
 //                        owngroup.is_confirmed = true;
 //                    }
@@ -204,6 +213,37 @@ public class CourseGroupsActivity extends AppCompatActivity {
         @Override
         protected ResObject doInBackground(String... params) {
             return wsCalls.participant_details(params[0]);
+        }
+    }
+
+    private void register_gcm(){
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener( CourseGroupsActivity.this,  new OnSuccessListener<InstanceIdResult>() {
+            @Override
+            public void onSuccess(InstanceIdResult instanceIdResult) {
+                String newToken = instanceIdResult.getToken();
+                new RegisterGCM().execute(newToken);
+                Log.e("Moodle Mobile newToken",newToken);
+            }
+//            @Override
+//            public void onSuccess(InstanceIdResult instanceIdResult) {
+//                String newToken = instanceIdResult.getToken();
+//                Log.e("newToken",newToken);
+//
+//            }
+        });
+    }
+
+    class RegisterGCM extends AsyncTask<String,Void,Void> {
+        @Override
+        protected Void doInBackground(String... params) {
+            new WSCalls(getApplicationContext()).add_gcm_participant(LoggedUser.id,params[0]);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            Log.e("Moodle","Registered");
         }
     }
 

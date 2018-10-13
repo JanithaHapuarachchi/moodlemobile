@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -269,13 +270,18 @@ public class DiaryActivity extends AppCompatActivity {
                     work.project_name = jwork.getString("project_name");
                     p = new ParticipantItem();
                     p.id = jwork.getString("participant_id");
-                    p.name = jwork.getString("participant_name");
+                    p.name = jwork.getString("participant_fname");
                     work.participant =p;
                     work.comment_type = jwork.getString("comment_type");
                     work.comment = jwork.getString("comment");
                     work.comment_location = jwork.getString("comment");
                     work.comment_id = jwork.getString("comment_id");
-                    work.isDiary = jwork.getBoolean("is_diary");
+                    if(jwork.getString("is_diary").equals("")) {
+                        work.isDiary = true;
+                    }
+                    else{
+                        work.isDiary = false;
+                    }
                     ws = new ArrayList<WorkSeenItem>();
                     jseens = jwork.getJSONArray("seen_list");
                     for(int j=0;j<jseens.length();j++){
@@ -283,9 +289,9 @@ public class DiaryActivity extends AppCompatActivity {
                         wsi = new WorkSeenItem();
                         wsi.time =jseen.getString("time");
                         ps = new ParticipantItem();
-                        ps.name = jseen.getString("participant_name");
+                        ps.name = jseen.getString("participant_fname");
                         ps.id = jseen.getString("participant_id");
-                        wsi.name =  jseen.getString("participant_name");
+                        wsi.name =  jseen.getString("participant_fname");
                         wsi.id = jseen.getString("participant_id");
                         ws.add(wsi);
                     }
@@ -299,6 +305,7 @@ public class DiaryActivity extends AppCompatActivity {
             adapter = new DairyAdapter(getApplicationContext(),works,SELECTED_PARTICIPANT_ID);
             list_works.setAdapter(adapter);
         } catch (JSONException e) {
+            Log.e("Moodle Error",e.getMessage());
             e.printStackTrace();
         }
 

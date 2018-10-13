@@ -22,6 +22,7 @@ import mrt.lk.moodlemobile.GroupDetailsActivity;
 import mrt.lk.moodlemobile.R;
 import mrt.lk.moodlemobile.StudentEvaluationResultsActivity;
 import mrt.lk.moodlemobile.data.CourseGroupItem;
+import mrt.lk.moodlemobile.data.LoggedUser;
 import mrt.lk.moodlemobile.data.ParticipantItem;
 import mrt.lk.moodlemobile.data.ResObject;
 import mrt.lk.moodlemobile.utils.Constants;
@@ -63,7 +64,12 @@ public class GroupStudentInfoAdapter extends ArrayAdapter {
         txt_student = (TextView) v.getTag(R.id.txt_student);
         img_view_student_results = (ImageView) v.getTag(R.id.img_view_student_results);
         img_remove_student = (ImageView) v.getTag(R.id.img_remove_student);
-
+        if(LoggedUser.roleshortname.equals(LoggedUser.AS_TEACHER)) {
+            img_remove_student.setVisibility(View.VISIBLE);
+        }
+        else{
+            img_remove_student.setVisibility(View.INVISIBLE);
+        }
         if(grouptype.equals(EVALUATION_GROUP)){
             img_remove_student.setVisibility(View.GONE);
             img_view_student_results.setVisibility(View.GONE);
@@ -75,7 +81,7 @@ public class GroupStudentInfoAdapter extends ArrayAdapter {
                 ParticipantItem item = items.get(position);
                 Intent i = new Intent(context, StudentEvaluationResultsActivity.class);
                 i.putExtra("PARTICIPANT_ID",item.id);
-                i.putExtra("PARTICIPANT_NAME",item.name);
+                i.putExtra("PARTICIPANT_NAME",item.firstname);
                 context.startActivity(i);
 
 //                ParticipantItem item = items.get(position);
@@ -88,12 +94,15 @@ public class GroupStudentInfoAdapter extends ArrayAdapter {
         img_remove_student.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ParticipantItem item = items.get(position);
-                new RemoveStudentFromGroup(position).execute(GroupDetailsActivity.SELECTED_GROUP_ID,item.id);
+
+                    ParticipantItem item = items.get(position);
+                    new RemoveStudentFromGroup(position).execute(GroupDetailsActivity.SELECTED_GROUP_ID, item.id);
+
+
             }
         });
         ParticipantItem item = items.get(position);
-        txt_student.setText(item.name);
+        txt_student.setText(item.firstname);
         return  v;
     }
 

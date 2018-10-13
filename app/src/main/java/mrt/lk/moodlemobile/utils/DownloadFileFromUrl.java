@@ -51,8 +51,14 @@ public class DownloadFileFromUrl extends AsyncTask <String,Void,String> {
     protected String doInBackground(String... params) {
         int count;
             File apkStorage =null;
-
+Log.e("Moodle Down File",params[0]);
+        if(params[0] == null || params[0].trim().equals("")){
+            return "It may take some time to download your own file";
+        }
         try {
+
+
+
             URL url = new URL(params[0]);
             String[] items= params[0].split("/");
             String downloadFileName = items[items.length-1];

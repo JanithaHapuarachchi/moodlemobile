@@ -19,6 +19,7 @@ import mrt.lk.moodlemobile.GroupDetailsActivity;
 import mrt.lk.moodlemobile.R;
 import mrt.lk.moodlemobile.data.CourseGroupItem;
 import mrt.lk.moodlemobile.data.LoggedUser;
+import mrt.lk.moodlemobile.utils.Constants;
 import mrt.lk.moodlemobile.utils.Utility;
 
 /**
@@ -63,7 +64,7 @@ public class CourseGroupsAdapter extends ArrayAdapter {
             @Override
             public void onClick(View v) {
                 CourseGroupItem item = items.get(position);
-                if(item.is_confirmed) {
+                if(item.is_confirmed  || LoggedUser.roleshortname.equals(LoggedUser.AS_TEACHER)) {
                     Intent i = new Intent(context, CourseProjectsActivity.class);
                     i.putExtra("SELECTED_GROUP_ID", item.group_id);
                     i.putExtra("SELECTED_GROUP_NAME", item.group_name);
@@ -81,7 +82,7 @@ public class CourseGroupsAdapter extends ArrayAdapter {
             public void onClick(View v) {
 
                 CourseGroupItem item = items.get(position);
-                if(item.is_confirmed){
+                if(item.is_confirmed || LoggedUser.roleshortname.equals(LoggedUser.AS_TEACHER)){
                 Intent i = new Intent(context, GroupDetailsActivity.class);
                 i.putExtra("SELECTED_GROUP_ID",item.group_id);
                 i.putExtra("SELECTED_GROUP_NAME",item.group_name);

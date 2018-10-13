@@ -8,9 +8,10 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="30dp">
 
         <ImageView
+
             android:padding="5dp"
             android:id="@+id/img_remove_student"
             android:layout_width="30dp"
@@ -30,6 +31,7 @@
             android:layout_margin="5dp"
             />
         <TextView
+
             android:id="@+id/txt_student"
             android:layout_marginLeft="5dp"
             android:layout_alignParentLeft="true"

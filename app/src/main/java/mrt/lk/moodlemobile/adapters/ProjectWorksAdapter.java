@@ -22,6 +22,7 @@ import mrt.lk.moodlemobile.data.GroupSubProjectItem;
 import mrt.lk.moodlemobile.data.ParticipantItem;
 import mrt.lk.moodlemobile.data.WorkCommentItem;
 import mrt.lk.moodlemobile.data.WorkSeenItem;
+import mrt.lk.moodlemobile.utils.Constants;
 import mrt.lk.moodlemobile.utils.DownloadFileFromUrl;
 
 /**
@@ -35,7 +36,7 @@ public class ProjectWorksAdapter extends ArrayAdapter {
     boolean isProject;
     private final LayoutInflater mInflater;
     //public static final String PDF = "PDF";
-    public static final String TEXT = "TEXT";
+    public static final String TEXT = "text";
     String pid;
 
 
@@ -71,9 +72,9 @@ public class ProjectWorksAdapter extends ArrayAdapter {
         WorkCommentItem item = works.get(position);
         ParticipantItem p = item.participant;
         ArrayList<WorkSeenItem> s = item.seen_list;
-        txt_time.setText(item.time);
-        txt_comment.setText(item.comment);
-        txt_comment_by.setText(p.name);
+        txt_time.setText(item.time.trim());
+        txt_comment.setText(item.comment.trim());
+        txt_comment_by.setText(p.name.trim());
         String seen ="";
         if(s.size() >0){
             seen = s.get(0).name;
@@ -86,17 +87,7 @@ public class ProjectWorksAdapter extends ArrayAdapter {
         else{
             txt_seen.setVisibility(View.GONE);
         }
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)layout_work.getLayoutParams();
 
-        if(pid.equals(p.id)){
-            layout_work.setBackgroundResource(R.color.app_background_shadow);
-            params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        }
-        else{
-            layout_work.setBackgroundResource(R.color.white);
-            params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-        }
-        layout_work.setLayoutParams(params);
 
         if(item.comment_type.equals(TEXT)){
             btn_download.setVisibility(View.GONE);
@@ -107,11 +98,25 @@ public class ProjectWorksAdapter extends ArrayAdapter {
             txt_comment.setVisibility(View.GONE);
         }
 
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)layout_work.getLayoutParams();
+
+        if(pid.equals(p.id)){
+            layout_work.setBackgroundResource(R.color.app_background_shadow);
+            params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            params.addRule(RelativeLayout.ALIGN_PARENT_LEFT,0);
+        }
+        else{
+            layout_work.setBackgroundResource(R.color.white);
+            params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+            params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT,0);
+        }
+        layout_work.setLayoutParams(params);
+
         btn_download.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 WorkCommentItem item = works.get(position);
-                new DownloadFileFromUrl(ProjectWorksActivity.prgController,btn_download,context).execute(item.comment_location);
+                new DownloadFileFromUrl(ProjectWorksActivity.prgController,btn_download,context).execute(Constants.ROOT_URL+item.comment_location);
             }
         });
 

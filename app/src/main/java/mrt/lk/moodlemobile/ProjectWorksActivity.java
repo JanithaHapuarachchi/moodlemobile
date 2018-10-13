@@ -166,10 +166,10 @@ public class ProjectWorksActivity extends AppCompatActivity {
                 }
             }
         });
-        //new CallWorkList().execute("");
-        setSampleData();
-        adapter = new ProjectWorksAdapter(getApplicationContext(),works, LoggedUser.id);
-        list_works.setAdapter(adapter);
+        new CallWorkList().execute("");
+      //  setSampleData();
+       // adapter = new ProjectWorksAdapter(getApplicationContext(),works, LoggedUser.id);
+       // list_works.setAdapter(adapter);
 
     }
 
@@ -365,16 +365,26 @@ public class ProjectWorksActivity extends AppCompatActivity {
                     work = new WorkCommentItem();
                     work.time = jwork.getString("time");
                     work.comment_id = jwork.getString("comment_id");
-                    work.project_name = jwork.getString("project_name");
+                    //work.project_name = jwork.getString("project_name");
                     p = new ParticipantItem();
                     p.id = jwork.getString("participant_id");
-                    p.name = jwork.getString("participant_name");
+                    p.name = jwork.getString("participant_fname");
                     work.participant =p;
                     work.comment_type = jwork.getString("comment_type");
                     work.comment = jwork.getString("comment");
-                    work.comment_location = jwork.getString("comment");
+                    if(!work.comment_type.equals(ProjectWorksAdapter.TEXT)) {
+                        work.comment_location = jwork.getString("comment_location");
+                    }
+                    else{
+                        work.comment_location = jwork.getString("comment");
+                    }
                     work.comment_id = jwork.getString("comment_id");
-                    work.isDiary = jwork.getBoolean("is_diary");
+                    if(jwork.getString("is_diary").equals("1")) {
+                        work.isDiary = true;
+                    }
+                    else{
+                        work.isDiary = false;
+                    }
                     ws = new ArrayList<WorkSeenItem>();
 
                     if(i==ja.length()-1){
@@ -403,6 +413,7 @@ public class ProjectWorksActivity extends AppCompatActivity {
             adapter = new ProjectWorksAdapter(getApplicationContext(),works,LoggedUser.id);
             list_works.setAdapter(adapter);
         } catch (JSONException e) {
+            Log.e("Moodle Error",e.getMessage());
             e.printStackTrace();
         }
 

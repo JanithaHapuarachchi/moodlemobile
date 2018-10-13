@@ -126,19 +126,19 @@ public class FinalReportActivity extends AppCompatActivity {
             img_upload_final_report.setVisibility(View.GONE);
         }
 
-        img_upload_final_report.setVisibility(View.VISIBLE);
+       // img_upload_final_report.setVisibility(View.VISIBLE);
         btn_download.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String u = "https://webmail.mobitel.lk/owa/service.svc/s/GetFileAttachment?id=AAMkAGYwNmEwMTY3LWZhNmUtNDg2YS04NWRmLWNhM2RmMTBmYTM5YgBGAAAAAAB4niVppQ8eRqbeLZR%2BfCWuBwAckZDp4cZCQ71tGAc1FEviAAAAAAEMAAAckZDp4cZCQ71tGAc1FEviAADxRXqNAAABEgAQAKNwQcGP%2FxBMsqkxVglrwG0%3D&X-OWA-CANARY=IjDMUsfaTEu4wmXtQoo0F5KkFisYJtYIsEx8xfk1pzXXO1u7R-aFJjxKsfyGi01sGO0E1HOkhjw.";
-                new DownloadFileFromUrl(prgController,btn_download,FinalReportActivity.this).execute(u);
+               // String u = "https://webmail.mobitel.lk/owa/service.svc/s/GetFileAttachment?id=AAMkAGYwNmEwMTY3LWZhNmUtNDg2YS04NWRmLWNhM2RmMTBmYTM5YgBGAAAAAAB4niVppQ8eRqbeLZR%2BfCWuBwAckZDp4cZCQ71tGAc1FEviAAAAAAEMAAAckZDp4cZCQ71tGAc1FEviAADxRXqNAAABEgAQAKNwQcGP%2FxBMsqkxVglrwG0%3D&X-OWA-CANARY=IjDMUsfaTEu4wmXtQoo0F5KkFisYJtYIsEx8xfk1pzXXO1u7R-aFJjxKsfyGi01sGO0E1HOkhjw.";
+                new DownloadFileFromUrl(prgController,btn_download,FinalReportActivity.this).execute(Constants.ROOT_URL+final_report_link);
             }
         });
 
         btn_download_preview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new DownloadFileFromUrl(prgController,btn_download_preview,FinalReportActivity.this).execute(preview_report_link);
+                new DownloadFileFromUrl(prgController,btn_download_preview,FinalReportActivity.this).execute(Constants.ROOT_URL+preview_report_link);
             }
         });
 
@@ -165,7 +165,7 @@ public class FinalReportActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(!isOwnlikefound){
-                     new SendLikeUnlike(btn_like,btn_unlike).execute(r_preview.id,"1");
+                     new    SendLikeUnlike(btn_like,btn_unlike).execute(r_preview.id,"1");
                   //  set_buttoncolors(btn_like,btn_unlike,true,true);
                 }
 
@@ -308,8 +308,21 @@ public class FinalReportActivity extends AppCompatActivity {
                 if(data.length()<1 || data.toString().equals("[]")){
                     set_buttoncolors(btn_like,btn_unlike,false,false);
                 }
-                JSONObject jprevw = data.getJSONObject("preview_report");
-                JSONObject jfinal = data.getJSONObject("final_report");
+                JSONObject jprevw;
+                JSONObject jfinal;
+                if(data.isNull("preview_report")){
+                    jprevw = null;
+                }
+                else{
+                    jprevw  = data.getJSONObject("preview_report");
+                }
+                if(data.isNull("final_report")){
+                    jfinal = null;
+                }
+                else{
+                    jfinal   = data.getJSONObject("final_report");
+                }
+
                 JSONArray jcomments,jlikes;
                 wc = new ArrayList<WorkCommentItem>();
                 lk = new ArrayList<ReportLikeItem>();
@@ -319,7 +332,7 @@ public class FinalReportActivity extends AppCompatActivity {
                     r_final.id = jfinal.getString("report_id");
                     r_final.time = jfinal.getString("time");
                     r_final.report_location = jfinal.getString("report");
-                    txt_final_upload_by.setText(jfinal.getString("participant_name"));
+                    txt_final_upload_by.setText(jfinal.getString("participant_fname"));
                     final_report_link = r_final.report_location;
                 }
                 else{
@@ -331,7 +344,7 @@ public class FinalReportActivity extends AppCompatActivity {
                     r_preview.id = jprevw.getString("report_id");
                     r_preview.time = jprevw.getString("time");
                     r_preview.report_location = jprevw.getString("report");
-                    txt_report_by.setText(jprevw.getString("participant_name"));
+                    txt_report_by.setText(jprevw.getString("participant_fname"));
                     preview_report_link = r_preview.report_location;
                     jcomments = jprevw.getJSONArray("report_comments");
                     WorkCommentItem wci;
@@ -344,7 +357,7 @@ public class FinalReportActivity extends AppCompatActivity {
                         wci.comment = jwork.getString("comment");
                         wci.time = jwork.getString("time");
                         p = new ParticipantItem();
-                        p.name = jwork.getString("participant_name");
+                        p.name = jwork.getString("participant_fname");
                         p.id = jwork.getString("participant_id");
                         wci.participant =p;
                         wc.add(wci);
@@ -357,11 +370,19 @@ public class FinalReportActivity extends AppCompatActivity {
                     JSONObject jlike;
                     for(int i=0;i< jlikes.length();i++){
                         lki = new ReportLikeItem();
-                        jlike =jcomments.getJSONObject(i);
+                        jlike =jlikes.getJSONObject(i);
                         p = new ParticipantItem();
-                        p.name = jlike.getString("participant_name");
+                        p.name = jlike.getString("participant_fname");
                         p.id = jlike.getString("participant_id");
-                        lki.isLike = jlike.getBoolean("islike");
+                        if(jlike.getString("islike").equals("1")){
+                            lki.isLike = true;
+                        }
+                        else{
+                            lki.isLike = false;
+                        }
+                        if(p.id.equals(LoggedUser.id)){
+                            set_buttoncolors(btn_like,btn_unlike,true,lki.isLike);
+                        }
                         lki.participant = p;
                         lki.time = jlike.getString("time");
                         lk.add(lki);
@@ -377,8 +398,10 @@ public class FinalReportActivity extends AppCompatActivity {
                 set_buttoncolors(btn_like,btn_unlike,false,false);
             }
             showcomments();
+            showlikes();
 
         } catch (JSONException e) {
+            Log.e("Moodle Error",e.getMessage());
             e.printStackTrace();
         }
     }
@@ -509,13 +532,13 @@ public class FinalReportActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            ProjectReportActivity.prgController.showProgressBar("Sending...");
+            prgController.showProgressBar("Sending...");
         }
 
         @Override
         protected void onPostExecute(ResObject response) {
             super.onPostExecute(response);
-            ProjectReportActivity.prgController.hideProgressBar();
+            prgController.hideProgressBar();
             if(response.validity.equals(Constants.VALIDITY_SUCCESS)){
                 populate_comment_response(response.msg,reportid,comment,time);
             }
